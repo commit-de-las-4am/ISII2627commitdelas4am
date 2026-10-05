@@ -5,4 +5,6 @@ public class Cliente : ApplicationUser{
     }
 
     public string DireccionFacturacion{get;set;}
+
+    public List<CompraModelo3D> Compras {get;set;}
 }
