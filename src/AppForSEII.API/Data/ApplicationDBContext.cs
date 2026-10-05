@@ -23,4 +23,5 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<ReservaImpresora> ReservasImpresoras { get; set; }
 
 
+    public DbSet<Accesorio> Accesorios { get; set; }
 }
