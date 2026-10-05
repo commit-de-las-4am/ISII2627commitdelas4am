@@ -1,4 +1,9 @@
 @startuml
+!include .\\CompraModelo3D.puml
+!include .\\FormatoModelo3D.puml
+!include .\\LicenciaModelo3D.puml
+!include .\\LineaCompraModelo.puml
+!include .\\Modelo3D.puml
 !include .\\Accesorio.puml
 !include .\\ApplicationUser.puml
 !include .\\CategoriaAccesorio.puml
