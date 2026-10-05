@@ -22,4 +22,5 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
   
     public DbSet<Impresora3D> Impresoras3D { get; set; }
 
+
 }
