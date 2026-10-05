@@ -1,9 +1,9 @@
 @startuml
-class ApplicationUser {
-    + ApplicationUser()
-    + ApplicationUser(id:string, name:string, surname:string, userName:string)
-    + Name : string? <<get>> <<set>>
-    + Surname : string? <<get>> <<set>>
-}
-IdentityUser <|-- ApplicationUser
+!include .\\Accesorio.puml
+!include .\\ApplicationUser.puml
+!include .\\CategoriaAccesorio.puml
+!include .\\Cliente.puml
+!include .\\CompraAccesorios.puml
+!include .\\LineaCompraAccesorio.puml
+!include .\\MetodoPago.puml
 @enduml
