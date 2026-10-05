@@ -17,11 +17,18 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
 
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
-
-    public DbSet<CompraAccesorios> ComprasAccesorios { get; set; }
     
     public DbSet<Cliente> Clientes { get; set; }
 
-    public DbSet<LineaCompraAccesorio> LineasCompraAccesorios { get; set; }
+    public DbSet<CompraAccesorios> ComprasAccesorios { get; set; }
 
+    public DbSet<LineaCompraAccesorio> LineasCompraAccesorios { get; set; }
+    public DbSet<LicenciaModelo3D> LicenciasModelo3D { get; set; }
+    public DbSet<Modelo3D> Modelos3D { get; set; }
+    public DbSet<LineaCompraModelo>  LineaCompraModelos { get; set; }
+    public DbSet<CompraModelo3D> ComprasModelo3D { get; set; }
+    
+
+
+    public DbSet<Accesorio> Accesorios { get; set; }
 }
