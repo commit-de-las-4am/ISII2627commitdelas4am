@@ -1,3 +1,6 @@
+using AppForSEII.API.Models;
+using Microsoft.AspNetCore.Identity;
+
 namespace AppForSEII.API.Data {
     public class SeedData {
         public static void Initialize(ApplicationDbContext dbContext, IServiceProvider serviceProvider, ILogger logger) {
@@ -19,14 +22,17 @@ namespace AppForSEII.API.Data {
                 logger.LogError(ex, "An error occurred seeding the Users in the Database.");
             }
 
- 
-
+            // NUEVO: Inyectar datos de negocio (Accesorios, Impresoras, etc.)
+            try {
+                SeedBusinessData(dbContext);
+            }
+            catch (Exception ex) {
+                logger.LogError(ex, "An error occurred seeding the business data in the Database.");
+            }
         }
 
         public static void SeedRoles(RoleManager<IdentityRole> roleManager, List<string> roles) {
-
             foreach (string roleName in roles) {
-                //it checks such role does not exist in the database 
                 if (!roleManager.RoleExistsAsync(roleName).Result) {
                     IdentityRole role = new IdentityRole();
                     role.Name = roleName;
@@ -34,11 +40,9 @@ namespace AppForSEII.API.Data {
                     IdentityResult roleResult = roleManager.CreateAsync(role).Result;
                 }
             }
-
         }
 
         public static void SeedUsers(UserManager<ApplicationUser> userManager, List<string> roles) {
-            //first, it checks the user does not already exist in the DB
             if (userManager.FindByNameAsync("elena@uclm.es").Result == null) {
                 ApplicationUser user = new ApplicationUser("1", "Elena", "Navarro Martínez", "elena@uclm.es");
                 user.EmailConfirmed = true;
@@ -47,33 +51,52 @@ namespace AppForSEII.API.Data {
                 result.Wait();
 
                 if (result.IsCompletedSuccessfully) {
-                    //administrator role
                     userManager.AddToRoleAsync(user, roles[0]).Wait();
                 }
             }
 
-
             if (userManager.FindByNameAsync("peter@uclm.es").Result == null) {
-                //A customer class has been defined because it has different attributes (purchase, rental, etc.)
                 ApplicationUser user = new ApplicationUser("3", "Peter", "Jackson", "peter@uclm.es");
                 user.EmailConfirmed = true;
 
                 var result = userManager.CreateAsync(user, "OtherPass12$");
-
                 result.Wait();
 
                 if (result.IsCompletedSuccessfully) {
-                    //customer role
                     userManager.AddToRoleAsync(user, roles[2]).Wait();
-
                 }
             }
-
         }
 
+        public static void SeedBusinessData(ApplicationDbContext context) {
+            // 1. Crear Accesorios si la tabla está vacía
+            if (!context.Accesorios.Any()) {
+                
+                // Creamos una categoría temporal porque es [Required] para el Accesorio
+                var categoriaPrueba = new CategoriaAccesorio {
+                    // Si esta clase tiene propiedades obligatorias (como Nombre), ponlas aquí. 
+                    // Si es un Enum, borra esta variable y asigna el Enum directamente abajo.
+                };
 
+                context.Accesorios.AddRange(
+                    new Accesorio { 
+                        Nombre = "Bobina PLA Rojo",
+                        Compatibilidad = "Cualquier impresora FDM",
+                        CantidadDisponible = 25,
+                        Precio = 19.99m,
+                        Categoria = categoriaPrueba
+                    },
+                    new Accesorio {
+                        Nombre = "Boquilla Latón 0.4mm",
+                        Compatibilidad = "Creality Ender 3",
+                        CantidadDisponible = 100,
+                        Precio = 4.50m,
+                        Categoria = categoriaPrueba
+                    }
+                );
+            }
 
-
-
+            context.SaveChanges();
+        }
     }
 }
