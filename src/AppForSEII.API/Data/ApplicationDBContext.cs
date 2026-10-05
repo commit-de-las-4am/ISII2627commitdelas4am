@@ -25,7 +25,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<LineaReserva> LineasReserva { get; set; }
   
     public DbSet<Impresora3D> Impresoras3D { get; set; }
+    public DbSet<CompraAccesorios> ComprasAccesorios { get; set; }
 
+    public DbSet<LineaCompraAccesorio> LineasCompraAccesorios { get; set; }
     public DbSet<LicenciaModelo3D> LicenciasModelo3D { get; set; }
     public DbSet<Modelo3D> Modelos3D { get; set; }
     public DbSet<LineaCompraModelo>  LineaCompraModelos { get; set; }
