@@ -20,5 +20,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     
     public DbSet<Cliente> Clientes { get; set; }
 
+    public DbSet<LicenciaModelo3D> LicenciasModelo3D { get; set; }
+    
 
 }
