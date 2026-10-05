@@ -2,6 +2,10 @@
 class Cliente {
     + Cliente(direccionFacturacion:string)
     + DireccionFacturacion : string <<get>> <<set>>
+    + Cliente()
+    + Cliente(direccionFacturacion:string)
+    + DireccionFacturacion : string <<get>> <<set>>
+    + Compras : List<CompraModelo3D> <<get>> <<set>>
 }
 ApplicationUser <|-- Cliente
 @enduml
