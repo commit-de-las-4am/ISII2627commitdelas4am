@@ -1,0 +1,18 @@
+@startuml
+class CompraAccesorios {
+    + Id : int <<get>> <<set>>
+    + NombreCliente : string <<get>> <<set>>
+    + ApellidosCliente : string <<get>> <<set>>
+    + DireccionEnvio : string <<get>> <<set>>
+    + NumeroTelefono : string <<get>> <<set>>
+    + PrecioTotal : decimal <<get>> <<set>>
+    + CompraAccesorios()
+    + CompraAccesorios(id:int, fechaCompra:DateTime, nombreCliente:string, apellidosCliente:string, direccionEnvio:string, numeroTelefono:string, precioTotal:decimal, metodoPago:MetodoPago)
+}
+class "IList`1"<T> {
+}
+CompraAccesorios --> "FechaCompra" DateTime
+CompraAccesorios --> "MetodoPago" MetodoPago
+CompraAccesorios o-> "Lineas<LineaCompraAccesorio>" "IList`1"
+CompraAccesorios --> "Cliente" Cliente
+@enduml
