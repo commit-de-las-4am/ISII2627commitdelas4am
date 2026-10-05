@@ -28,4 +28,5 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     
 
 
+    public DbSet<Accesorio> Accesorios { get; set; }
 }

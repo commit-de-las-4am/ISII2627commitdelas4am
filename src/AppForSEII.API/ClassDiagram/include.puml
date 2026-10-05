@@ -1,10 +1,12 @@
 @startuml
-!include .\\ApplicationUser.puml
-!include .\\Cliente.puml
 !include .\\CompraModelo3D.puml
 !include .\\FormatoModelo3D.puml
 !include .\\LicenciaModelo3D.puml
 !include .\\LineaCompraModelo.puml
-!include .\\MetodoPago.puml
 !include .\\Modelo3D.puml
+!include .\\Accesorio.puml
+!include .\\ApplicationUser.puml
+!include .\\CategoriaAccesorio.puml
+!include .\\Cliente.puml
+!include .\\MetodoPago.puml
 @enduml
