@@ -1,4 +1,3 @@
-namespace AppForSEII.API.Models;
 public class LicenciaModelo3D
 {
     public LicenciaModelo3D()
