@@ -38,6 +38,7 @@ public class CompraModelo3D
     [StringLength(500, ErrorMessage = "La descripción no puede superar los 500 caracteres.")]
     public string? Descripcion { get; set; }
     
+    [Column(TypeName = "decimal(18,2)")]
     [Required]
     public decimal PrecioTotal { get; set; }
 
