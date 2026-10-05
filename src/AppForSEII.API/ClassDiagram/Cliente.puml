@@ -1,7 +1,5 @@
 @startuml
 class Cliente {
-    + Cliente(direccionFacturacion:string)
-    + DireccionFacturacion : string <<get>> <<set>>
     + Cliente()
     + Cliente(direccionFacturacion:string)
     + DireccionFacturacion : string <<get>> <<set>>
