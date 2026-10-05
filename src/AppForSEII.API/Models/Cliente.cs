@@ -1,3 +1,4 @@
+namespace AppForSEII.API.Models;
 public class Cliente : ApplicationUser{
     public Cliente()
     {
