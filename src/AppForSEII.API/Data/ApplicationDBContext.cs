@@ -21,6 +21,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<CompraAccesorios> ComprasAccesorios { get; set; }
 
     
+    
+    public DbSet<Cliente> Clientes { get; set; }
 
 
 }
