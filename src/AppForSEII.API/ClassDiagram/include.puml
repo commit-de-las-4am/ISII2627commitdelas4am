@@ -8,5 +8,7 @@
 !include .\\ApplicationUser.puml
 !include .\\CategoriaAccesorio.puml
 !include .\\Cliente.puml
+!include .\\CompraAccesorios.puml
+!include .\\LineaCompraAccesorio.puml
 !include .\\MetodoPago.puml
 @enduml
