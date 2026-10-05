@@ -20,5 +20,5 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     
     public DbSet<Cliente> Clientes { get; set; }
 
-
+    public DbSet<Accesorio> Accesorios { get; set; }
 }
