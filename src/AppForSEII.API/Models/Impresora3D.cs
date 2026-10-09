@@ -5,6 +5,18 @@ namespace AppForSEII.API.Models;
 
 public class Impresora3D
 {
+    public Impresora3D() { }
+
+    public Impresora3D(string nombre, string modelo, TipoImpresora tipo, string descripcion, decimal precioKilovatioHora, decimal precioReserva)
+    {
+        Nombre = nombre;
+        Modelo = modelo;
+        Tipo = tipo;
+        Descripcion = descripcion;
+        PrecioKilovatioHora = precioKilovatioHora;
+        PrecioReserva = precioReserva;
+    }
+
     [Key]
     public int Id { get; set; }
 
@@ -33,15 +45,5 @@ public class Impresora3D
     [Precision(8, 2)]
     public decimal PrecioReserva { get; set; }
 
-    public Impresora3D() { }
-
-    public Impresora3D(string nombre, string modelo, TipoImpresora tipo, string descripcion, decimal precioKilovatioHora, decimal precioReserva)
-    {
-        Nombre = nombre;
-        Modelo = modelo;
-        Tipo = tipo;
-        Descripcion = descripcion;
-        PrecioKilovatioHora = precioKilovatioHora;
-        PrecioReserva = precioReserva;
-    }
+    
 }

@@ -8,6 +8,16 @@ namespace AppForSEII.API.Models;
 
 public class ReservaImpresora
 {
+     public ReservaImpresora() { }
+
+    public ReservaImpresora(int id, DateTime fechaReserva, decimal precioTotal, MetodoPago metodoPago, string clienteId)
+    {
+        Id = id;
+        FechaReserva = fechaReserva;
+        PrecioTotal = precioTotal;
+        MetodoPago = metodoPago;
+        ClienteId = clienteId;
+    }
     [Key]
     public int Id { get; set; }
 
@@ -33,14 +43,5 @@ public class ReservaImpresora
 
     public IList<LineaReserva> LineasReserva { get; set; } = new List<LineaReserva>();
 
-    public ReservaImpresora() { }
-
-    public ReservaImpresora(int id, DateTime fechaReserva, decimal precioTotal, MetodoPago metodoPago, string clienteId)
-    {
-        Id = id;
-        FechaReserva = fechaReserva;
-        PrecioTotal = precioTotal;
-        MetodoPago = metodoPago;
-        ClienteId = clienteId;
-    }
+   
 }
