@@ -22,7 +22,6 @@ namespace AppForSEII.API.Data {
                 logger.LogError(ex, "An error occurred seeding the Users in the Database.");
             }
 
-            // NUEVO: Inyectar datos de negocio (Accesorios, Impresoras, etc.)
             try {
                 SeedBusinessData(dbContext);
             }
@@ -69,29 +68,21 @@ namespace AppForSEII.API.Data {
         }
 
         public static void SeedBusinessData(ApplicationDbContext context) {
-            // 1. Crear Accesorios si la tabla está vacía
             if (!context.Accesorios.Any()) {
-                
-                // Creamos una categoría temporal porque es [Required] para el Accesorio
-                var categoriaPrueba = new CategoriaAccesorio {
-                    // Si esta clase tiene propiedades obligatorias (como Nombre), ponlas aquí. 
-                    // Si es un Enum, borra esta variable y asigna el Enum directamente abajo.
-                };
-
                 context.Accesorios.AddRange(
                     new Accesorio { 
                         Nombre = "Bobina PLA Rojo",
                         Compatibilidad = "Cualquier impresora FDM",
                         CantidadDisponible = 25,
                         Precio = 19.99m,
-                        Categoria = categoriaPrueba
+                        Categoria = CategoriaAccesorio.Repuestos
                     },
                     new Accesorio {
                         Nombre = "Boquilla Latón 0.4mm",
                         Compatibilidad = "Creality Ender 3",
                         CantidadDisponible = 100,
                         Precio = 4.50m,
-                        Categoria = categoriaPrueba
+                        Categoria = CategoriaAccesorio.Boquillas
                     }
                 );
             }
