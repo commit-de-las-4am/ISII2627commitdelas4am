@@ -8,16 +8,24 @@ namespace AppForSEII.API.Models;
 
 public class ReservaImpresora
 {
-     public ReservaImpresora() { }
-
-    public ReservaImpresora(int id, DateTime fechaReserva, decimal precioTotal, MetodoPago metodoPago, string clienteId)
+     public ReservaImpresora()
     {
+        PrecioTotal = -1;
+        FechaReserva = DateTime.Now;
+        MetodoPago = MetodoPago.NoDefinido;
+        ClienteId = string.Empty;
+    }
+
+    public ReservaImpresora(int id, DateTime fechaReserva, decimal precioTotal, MetodoPago metodoPago, string clienteId):this() 
+    {
+        
         Id = id;
         FechaReserva = fechaReserva;
         PrecioTotal = precioTotal;
         MetodoPago = metodoPago;
         ClienteId = clienteId;
     }
+    
     [Key]
     public int Id { get; set; }
 
@@ -35,7 +43,7 @@ public class ReservaImpresora
     [System.ComponentModel.DataAnnotations.Display(Name = "Método de pago")]
     public MetodoPago MetodoPago { get; set; }
 
-    public string ClienteId { get; set; } = string.Empty;
+    public string ClienteId { get; set; } 
 
     [Required]
     [ForeignKey(nameof(ClienteId))]
