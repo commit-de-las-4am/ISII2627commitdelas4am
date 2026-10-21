@@ -14,6 +14,7 @@ public class Impresora3D
             PrecioReserva = -1;
             Tipo = TipoImpresora.NoDefinido;
     }
+    
 
     public Impresora3D(string nombre, string modelo, TipoImpresora tipo, string descripcion, decimal precioKilovatioHora, decimal precioReserva)
     {

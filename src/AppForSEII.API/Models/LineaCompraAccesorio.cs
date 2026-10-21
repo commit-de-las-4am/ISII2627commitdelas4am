@@ -5,6 +5,21 @@ namespace AppForSEII.API.Models
 {
     public class LineaCompraAccesorio
     {
+        // Constructor vacío 
+        public LineaCompraAccesorio()
+        {
+        }
+
+        // Constructor con parámetros
+        public LineaCompraAccesorio(int id, int cantidad, decimal precioUnitario, CompraAccesorios compra, Accesorio accesorio)
+        {
+            Id = id;
+            Cantidad = cantidad;
+            PrecioUnitario = precioUnitario;
+            Compra = compra;
+            Accesorio = accesorio;
+        }
+
         [Key]
         public int Id { get; set; }
 
@@ -30,19 +45,5 @@ namespace AppForSEII.API.Models
         [ForeignKey("AccesorioId")]
         public Accesorio Accesorio { get; set; }
 
-        // Constructor vacío 
-        public LineaCompraAccesorio()
-        {
-        }
-
-        // Constructor con parámetros
-        public LineaCompraAccesorio(int id, int cantidad, decimal precioUnitario, CompraAccesorios compra, Accesorio accesorio)
-        {
-            Id = id;
-            Cantidad = cantidad;
-            PrecioUnitario = precioUnitario;
-            Compra = compra;
-            Accesorio = accesorio;
-        }
     }
 }
