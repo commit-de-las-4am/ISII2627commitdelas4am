@@ -5,6 +5,9 @@ namespace AppForSEII.API.Models
         // Constructor vacío (obligatorio para Entity Framework)
         public Accesorio()
         {
+            Nombre = string.Empty;
+            Compatibilidad = string.Empty;
+            Categoria = default;
         }
 
         // Constructor con parámetros generado

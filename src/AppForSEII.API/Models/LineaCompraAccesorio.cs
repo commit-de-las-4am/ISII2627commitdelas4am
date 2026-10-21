@@ -8,6 +8,10 @@ namespace AppForSEII.API.Models
         // Constructor vacío 
         public LineaCompraAccesorio()
         {
+            Cantidad = 0;
+            PrecioUnitario = 0;
+            Compra = null!;
+            Accesorio = null!;
         }
 
         // Constructor con parámetros
