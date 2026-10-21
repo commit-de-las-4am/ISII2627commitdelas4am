@@ -9,6 +9,11 @@ namespace AppForSEII.API.Models
         // Constructor vacío 
         public CompraAccesorios()
         {
+            NombreCliente = string.Empty;
+            ApellidosCliente = string.Empty;
+            DireccionEnvio = string.Empty;
+            NumeroTelefono = string.Empty;
+            Cliente = null!;
         }
 
         // Constructor con parámetros
@@ -22,6 +27,7 @@ namespace AppForSEII.API.Models
             NumeroTelefono = numeroTelefono;
             PrecioTotal = precioTotal;
             MetodoPago = metodoPago;
+            Cliente = null!;
         }
         
         [Key]
