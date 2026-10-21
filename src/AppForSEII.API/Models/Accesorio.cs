@@ -2,6 +2,22 @@ namespace AppForSEII.API.Models
 {
     public class Accesorio
     {
+        // Constructor vacío (obligatorio para Entity Framework)
+        public Accesorio()
+        {
+        }
+
+        // Constructor con parámetros generado
+        public Accesorio(int id, string nombre, CategoriaAccesorio categoria, string compatibilidad, int cantidadDisponible, decimal precio)
+        {
+            Id = id;
+            Nombre = nombre;
+            Categoria = categoria;
+            Compatibilidad = compatibilidad;
+            CantidadDisponible = cantidadDisponible;
+            Precio = precio;
+        }
+        
         [Key]
         public int Id { get; set; }
 
@@ -22,20 +38,5 @@ namespace AppForSEII.API.Models
         [Microsoft.EntityFrameworkCore.Precision(5, 2)]
         public decimal Precio { get; set; }
 
-        // Constructor vacío (obligatorio para Entity Framework)
-        public Accesorio()
-        {
-        }
-
-        // Constructor con parámetros generado
-        public Accesorio(int id, string nombre, CategoriaAccesorio categoria, string compatibilidad, int cantidadDisponible, decimal precio)
-        {
-            Id = id;
-            Nombre = nombre;
-            Categoria = categoria;
-            Compatibilidad = compatibilidad;
-            CantidadDisponible = cantidadDisponible;
-            Precio = precio;
-        }
     }
 }
