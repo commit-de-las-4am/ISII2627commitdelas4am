@@ -6,7 +6,14 @@ namespace AppForSEII.API.Models;
 
 public class LineaReserva
 {
-     public LineaReserva() { }
+     public LineaReserva()
+    {
+        
+        TiempoReserva = TiempoReserva.NoDefinido;
+        PrecioSubtotal = -1;
+        ImpresoraId = -1;
+        ReservaImpresoraId = -1;
+    }
 
     public LineaReserva(int id, TiempoReserva tiempoReserva, decimal precioSubtotal, int impresoraId, int reservaImpresoraId)
     {
