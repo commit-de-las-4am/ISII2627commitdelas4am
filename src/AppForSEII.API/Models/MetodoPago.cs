@@ -1,6 +1,6 @@
 public enum MetodoPago
 {
-    NotSpecified,
+    NoDefinido,
     TarjetaCredito,
     PayPal,
     Bizum

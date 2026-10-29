@@ -6,6 +6,30 @@ namespace AppForSEII.API.Models
 {
     public class CompraAccesorios
     {
+        // Constructor vacío 
+        public CompraAccesorios()
+        {
+            NombreCliente = string.Empty;
+            ApellidosCliente = string.Empty;
+            DireccionEnvio = string.Empty;
+            NumeroTelefono = string.Empty;
+            Cliente = null!;
+        }
+
+        // Constructor con parámetros
+        public CompraAccesorios(int id, DateTime fechaCompra, string nombreCliente, string apellidosCliente, string direccionEnvio, string numeroTelefono, decimal precioTotal, MetodoPago metodoPago)
+        {
+            Id = id;
+            FechaCompra = fechaCompra;
+            NombreCliente = nombreCliente;
+            ApellidosCliente = apellidosCliente;
+            DireccionEnvio = direccionEnvio;
+            NumeroTelefono = numeroTelefono;
+            PrecioTotal = precioTotal;
+            MetodoPago = metodoPago;
+            Cliente = null!;
+        }
+        
         [Key]
         public int Id { get; set; }
 
@@ -42,22 +66,5 @@ namespace AppForSEII.API.Models
         // Relación: Un cliente realiza varias compras
         public Cliente Cliente { get; set; }
 
-        // Constructor vacío 
-        public CompraAccesorios()
-        {
-        }
-
-        // Constructor con parámetros
-        public CompraAccesorios(int id, DateTime fechaCompra, string nombreCliente, string apellidosCliente, string direccionEnvio, string numeroTelefono, decimal precioTotal, MetodoPago metodoPago)
-        {
-            Id = id;
-            FechaCompra = fechaCompra;
-            NombreCliente = nombreCliente;
-            ApellidosCliente = apellidosCliente;
-            DireccionEnvio = direccionEnvio;
-            NumeroTelefono = numeroTelefono;
-            PrecioTotal = precioTotal;
-            MetodoPago = metodoPago;
-        }
     }
 }
