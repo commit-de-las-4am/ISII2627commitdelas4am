@@ -2,6 +2,17 @@ public class CompraModelo3D
 {
     public CompraModelo3D()
     {
+        FechaCompra = DateTime.Now;
+        NombreCliente = string.Empty;
+        ApellidosCliente = string.Empty;
+        CorreoElectronico = string.Empty;
+        DireccionFacturacion = string.Empty;
+        Descripcion = string.Empty;
+        PrecioTotal = 0.0m;
+        MetodoPago = MetodoPago.NoDefinido;
+        LineasCompraModelo = new List<LineaCompraModelo>();
+        Cliente = new Cliente();
+        ClienteId = string.Empty;
     }
 
     public CompraModelo3D( DateTime fechaCompra, string nombreCliente, string apellidosCliente, string correoElectronico, string direccionFacturacion, string descripcion, decimal precioTotal, MetodoPago metodoPago, string clienteId)
@@ -15,6 +26,8 @@ public class CompraModelo3D
         PrecioTotal = precioTotal;
         MetodoPago = metodoPago;
         ClienteId = clienteId;
+        LineasCompraModelo = new List<LineaCompraModelo>();
+        Cliente = new Cliente();
     }
 
     [Key]

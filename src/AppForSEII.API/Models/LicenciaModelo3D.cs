@@ -2,12 +2,16 @@ public class LicenciaModelo3D
 {
     public LicenciaModelo3D()
     {
+        Nombre = string.Empty;
+        FechaExpiracion = DateTime.Now;
+        Modelo3D = new Modelo3D();
     }
     public LicenciaModelo3D(int id, string nombre, DateTime fechaExpiracion)
     {
         Id = id;
         Nombre = nombre;
         FechaExpiracion = fechaExpiracion;
+        Modelo3D = new Modelo3D();
     }
     [Key]
     public int Id { get; set; }
