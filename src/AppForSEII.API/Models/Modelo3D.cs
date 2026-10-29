@@ -2,6 +2,12 @@ public class Modelo3D
 {
     public Modelo3D()
     {
+        Nombre = string.Empty;
+        Categoria = string.Empty;
+        Formato = FormatoModelo3D.NotSpecified;
+        Precio = 0.0m;
+        LineasCompraModelo = new List<LineaCompraModelo>();
+        Licencias = new List<LicenciaModelo3D>();
     }
 
     public Modelo3D(int id, string nombre, string categoria, FormatoModelo3D formato, decimal precio)
@@ -11,6 +17,8 @@ public class Modelo3D
         Categoria = categoria;
         Formato = formato;
         Precio = precio;
+        LineasCompraModelo = new List<LineaCompraModelo>();
+        Licencias = new List<LicenciaModelo3D>();
     }
     [Key]
     public int Id { get; set; }

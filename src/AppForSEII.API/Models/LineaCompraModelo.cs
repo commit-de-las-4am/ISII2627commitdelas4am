@@ -2,6 +2,11 @@ public class LineaCompraModelo
 {
     public LineaCompraModelo()
     {
+        CantidadLicencias = 0;
+        PrecioUnidad = 0.0m;
+        Subtotal = 0.0m;
+        CompraModelo3D = new CompraModelo3D();
+        Modelo3D = new Modelo3D();
     }
 
     public LineaCompraModelo(int ID, int cantidadLicencias, decimal precioUnidad, decimal subtotal)
@@ -10,6 +15,8 @@ public class LineaCompraModelo
         CantidadLicencias = cantidadLicencias;
         PrecioUnidad = precioUnidad;
         Subtotal = subtotal;
+        CompraModelo3D = new CompraModelo3D();
+        Modelo3D = new Modelo3D();
     }
     
     [Key]
