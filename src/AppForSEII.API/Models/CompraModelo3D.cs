@@ -9,7 +9,7 @@ public class CompraModelo3D
         DireccionFacturacion = string.Empty;
         Descripcion = string.Empty;
         PrecioTotal = 0.0m;
-        MetodoPago = MetodoPago.NotSpecified;
+        MetodoPago = MetodoPago.NoDefinido;
         LineasCompraModelo = new List<LineaCompraModelo>();
         Cliente = new Cliente();
         ClienteId = string.Empty;
