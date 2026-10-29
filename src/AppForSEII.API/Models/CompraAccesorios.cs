@@ -6,7 +6,6 @@ namespace AppForSEII.API.Models
 {
     public class CompraAccesorios
     {
-        // Constructor vacío 
         public CompraAccesorios()
         {
             NombreCliente = string.Empty;
@@ -16,7 +15,6 @@ namespace AppForSEII.API.Models
             Cliente = null!;
         }
 
-        // Constructor con parámetros
         public CompraAccesorios(int id, DateTime fechaCompra, string nombreCliente, string apellidosCliente, string direccionEnvio, string numeroTelefono, decimal precioTotal, MetodoPago metodoPago)
         {
             Id = id;
@@ -60,11 +58,10 @@ namespace AppForSEII.API.Models
         [Required]
         public MetodoPago MetodoPago { get; set; }
 
-        // Relación: Una compra contiene varias líneas de compra
         public IList<LineaCompraAccesorio> Lineas { get; set; } = new List<LineaCompraAccesorio>();
 
-        // Relación: Un cliente realiza varias compras
-        public Cliente Cliente { get; set; }
+        public string? ClienteId { get; set; }
+        public Cliente? Cliente { get; set; }
 
     }
 }
