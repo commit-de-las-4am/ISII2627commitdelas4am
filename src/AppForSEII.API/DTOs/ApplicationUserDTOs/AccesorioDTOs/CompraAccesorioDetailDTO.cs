@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace AppForSEII.API.DTOs.AccesorioDTOs
 {
     public class CompraAccesorioDetailDTO
@@ -10,11 +14,22 @@ namespace AppForSEII.API.DTOs.AccesorioDTOs
             DireccionEnvio = direccionEnvio;
             LineasCompra = lineasCompra;
         }
+        
         public int Id { get; set; }
         public DateTime FechaCompra { get; set; }
         public decimal PrecioTotal { get; set; }
         public string DireccionEnvio { get; set; }
         public IList<CompraAccesorioItemDTO> LineasCompra { get; set; }
 
+        public override bool Equals(object? obj)
+        {
+            return obj is CompraAccesorioDetailDTO dto &&
+                   Id == dto.Id &&
+                   PrecioTotal == dto.PrecioTotal &&
+                   DireccionEnvio == dto.DireccionEnvio &&
+                   LineasCompra.SequenceEqual(dto.LineasCompra);
+        }
+
+        public override int GetHashCode() => HashCode.Combine(Id, PrecioTotal, DireccionEnvio);
     }
 }

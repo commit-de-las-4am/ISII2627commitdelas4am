@@ -5,41 +5,34 @@ using AppForSEII.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
+using AppForSEII.UT;
+using AppForSEII.API.DTOs.AccesorioDTOs;
 
 namespace AppForSEII.Tests.Controllers
 {
-    public class CompraAccesoriosControllerTests
+    public class CompraAccesoriosControllerTests : AppForSEII4SqliteUT
     {
-        private ApplicationDbContext ConstruirContextoEnMemoria()
-        {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                .Options;
-            
-            return new ApplicationDbContext(options);
-        }
-
         [Fact]
         public async Task PostCompraAccesorio_ConDatosValidos_DevuelveCreated()
         {
+            var accesorio = new Accesorio(
+                1,
+                "Pintura Acrílica",
+                CategoriaAccesorio.Repuestos, 
+                "Compatible FDM",
+                5,
+                10m
+            );
+            
+            _context.Accesorios.Add(accesorio);
+            await _context.SaveChangesAsync(); 
 
-            var context = ConstruirContextoEnMemoria();
-            var accesorio = new Accesorio 
-            { 
-                Id = 1, 
-                Nombre = "Pintura Acrílica", 
-                Precio = 10m, 
-                CantidadDisponible = 5 
-            };
-            context.Accesorios.Add(accesorio);
-            await context.SaveChangesAsync();
-
-            var controller = new CompraAccesoriosController(context);
+            var controller = new CompraAccesoriosController(_context);
 
             var compraDTO = new CompraAccesorioCreateDTO
             {
-                NombreCliente = "Jorge",
-                ApellidosCliente = "Navarro",
+                NombreCliente = "Pepe",
+                ApellidosCliente = "Fernandez",
                 DireccionEnvio = "Calle Falsa 123",
                 NumeroTelefono = "123456789",
                 MetodoPago = MetodoPago.TarjetaCredito,
@@ -51,21 +44,28 @@ namespace AppForSEII.Tests.Controllers
 
             var result = await controller.PostCompraAccesorio(compraDTO);
 
-            Assert.IsType<CreatedAtActionResult>(result.Result);
-            
-            var accesorioActualizado = await context.Accesorios.FindAsync(1);
-            Assert.Equal(3, accesorioActualizado!.CantidadDisponible);
+            var actionResult = Assert.IsType<CreatedAtActionResult>(result.Result);
+            var compraObtenida = Assert.IsType<CompraAccesorioDetailDTO>(actionResult.Value);
+
+            var compraEsperada = new CompraAccesorioDetailDTO(
+                compraObtenida.Id,                 
+                compraObtenida.FechaCompra,     
+                20m,                           
+                "Calle Falsa 123",     
+                new List<CompraAccesorioItemDTO>()
+            );
+
+            Assert.True(compraEsperada.Equals(compraObtenida));
         }
 
         [Fact]
         public async Task PostCompraAccesorio_AccesorioNoExiste_DevuelveNotFound()
         {
-            var context = ConstruirContextoEnMemoria();
-            var controller = new CompraAccesoriosController(context);
+            var controller = new CompraAccesoriosController(_context);
 
             var compraDTO = new CompraAccesorioCreateDTO
             {
-                NombreCliente = "Jorge",
+                NombreCliente = "Pepe",
                 LineasCompra = new List<LineaCompraAccesorioCreateDTO>
                 {
                     new LineaCompraAccesorioCreateDTO { AccesorioId = 99, Cantidad = 1 }
@@ -80,22 +80,23 @@ namespace AppForSEII.Tests.Controllers
         [Fact]
         public async Task PostCompraAccesorio_SinStockSuficiente_DevuelveBadRequest()
         {
-            var context = ConstruirContextoEnMemoria();
-            var accesorio = new Accesorio 
-            { 
-                Id = 1, 
-                Nombre = "Pintura Acrílica", 
-                Precio = 10m, 
-                CantidadDisponible = 2
-            };
-            context.Accesorios.Add(accesorio);
-            await context.SaveChangesAsync();
+            var accesorio = new Accesorio(
+                1,
+                "Pintura Acrílica",
+                CategoriaAccesorio.Repuestos,
+                "Compatible FDM",
+                2,
+                10m
+            );
+            
+            _context.Accesorios.Add(accesorio);
+            await _context.SaveChangesAsync();
 
-            var controller = new CompraAccesoriosController(context);
+            var controller = new CompraAccesoriosController(_context);
 
             var compraDTO = new CompraAccesorioCreateDTO
             {
-                NombreCliente = "Jorge",
+                NombreCliente = "Pepe",
                 LineasCompra = new List<LineaCompraAccesorioCreateDTO>
                 {
                     new LineaCompraAccesorioCreateDTO { AccesorioId = 1, Cantidad = 5 }
