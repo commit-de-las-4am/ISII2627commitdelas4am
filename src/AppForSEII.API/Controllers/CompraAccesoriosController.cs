@@ -17,6 +17,7 @@ namespace AppForSEII.API.Controllers
         {
             _context = context;
         }
+
         //Get
         [HttpGet("{id}")]
         [Route("GetCompraAccesorio/{id}")]
@@ -48,21 +49,21 @@ namespace AppForSEII.API.Controllers
 
             return Ok(compra);
         }
+
         //Post
         [HttpPost]
         public async Task<ActionResult<CompraAccesorios>> PostCompraAccesorio(CompraAccesorioCreateDTO compraDTO)
         {
-            var nuevaCompra = new CompraAccesorios
-            {
-                FechaCompra = DateTime.Now,
-                NombreCliente = compraDTO.NombreCliente,
-                ApellidosCliente = compraDTO.ApellidosCliente,
-                DireccionEnvio = compraDTO.DireccionEnvio,
-                NumeroTelefono = compraDTO.NumeroTelefono,
-                MetodoPago = compraDTO.MetodoPago,
-                Cliente = null!,
-                Lineas = new List<LineaCompraAccesorio>()
-            };
+            var nuevaCompra = new CompraAccesorios(
+                0,
+                DateTime.Now,
+                compraDTO.NombreCliente,
+                compraDTO.ApellidosCliente,
+                compraDTO.DireccionEnvio,
+                compraDTO.NumeroTelefono,
+                0m,
+                compraDTO.MetodoPago
+            );
 
             decimal precioTotal = 0;
 
@@ -80,14 +81,13 @@ namespace AppForSEII.API.Controllers
                     return BadRequest($"No hay stock suficiente para el accesorio: {accesorio.Nombre}");
                 }
 
-                var linea = new LineaCompraAccesorio
-                {
-                    AccesorioId = accesorio.Id,
-                    Cantidad = lineaDTO.Cantidad,
-                    PrecioUnitario = accesorio.Precio,
-                    Accesorio = null!,
-                    Compra = null!     
-                };
+                var linea = new LineaCompraAccesorio(
+                    0,
+                    lineaDTO.Cantidad,
+                    accesorio.Precio,
+                    nuevaCompra,
+                    accesorio
+                );
 
                 precioTotal += (linea.Cantidad * linea.PrecioUnitario);
                 accesorio.CantidadDisponible -= linea.Cantidad;
@@ -100,7 +100,15 @@ namespace AppForSEII.API.Controllers
             _context.ComprasAccesorios.Add(nuevaCompra);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetCompraAccesorio), new { id = nuevaCompra.Id }, nuevaCompra);
+            var compraRetornoDTO = new CompraAccesorioDetailDTO(
+                nuevaCompra.Id,
+                nuevaCompra.FechaCompra,
+                nuevaCompra.PrecioTotal,
+                nuevaCompra.DireccionEnvio,
+                new List<CompraAccesorioItemDTO>() 
+            );
+
+            return CreatedAtAction("GetCompraAccesorio", new { id = nuevaCompra.Id }, compraRetornoDTO);
         }
     }
-} 
+}
