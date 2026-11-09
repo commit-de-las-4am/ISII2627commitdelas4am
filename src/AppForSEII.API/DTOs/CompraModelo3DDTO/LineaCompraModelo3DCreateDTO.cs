@@ -1,12 +1,12 @@
 namespace AppForSEII.API.DTOs.Modelo3DDTOs;
 
-public class LineaCompraModelo3DCreateDTO
+public class LineaCompraModelo3DDTO
 {
-    public LineaCompraModelo3DCreateDTO()
+    public LineaCompraModelo3DDTO()
     {
     }
 
-    public LineaCompraModelo3DCreateDTO(int modelo3DId, int cantidadLicencias)
+    public LineaCompraModelo3DDTO(int modelo3DId, int cantidadLicencias)
     {
         Modelo3DId = modelo3DId;
         CantidadLicencias = cantidadLicencias;
@@ -20,9 +20,7 @@ public class LineaCompraModelo3DCreateDTO
 
     public override bool Equals(object? obj)
     {
-        return obj is LineaCompraModelo3DCreateDTO otra &&
-               Modelo3DId == otra.Modelo3DId &&
-               CantidadLicencias == otra.CantidadLicencias;
+        return obj is LineaCompraModelo3DDTO otra && Modelo3DId == otra.Modelo3DId && CantidadLicencias == otra.CantidadLicencias;
     }
 
     public override int GetHashCode()
