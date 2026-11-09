@@ -1,6 +1,6 @@
 using AppForSEII.API.Controllers;
 using AppForSEII.API.Data;
-using AppForSEII.API.DTOs.ImpresoraDTOs;
+using AppForSEII.API.DTOs.ReservaImpresoraDTOs;
 using AppForSEII.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
