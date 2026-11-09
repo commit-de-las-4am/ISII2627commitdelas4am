@@ -40,8 +40,8 @@ namespace AppForSEII.UT
             };
 
             var reservaDTO = new ReservaImpresoraCreateDTO(
-                "Faris",
-                "Badr",
+                "Juan",
+                "Perez",
                 "Campus Universitario UCLM",
                 "612345678",
                 MetodoPago.TarjetaCredito,
@@ -74,8 +74,8 @@ namespace AppForSEII.UT
             var reservaEsperada = new ReservaImpresoraDetailDTO(
                 reservaObtenida.Id,
                 reservaObtenida.FechaReserva,
-                "Faris",
-                "Badr",
+                "Juan",
+                "Perez",
                 "Campus Universitario UCLM",
                 "612345678",
                 MetodoPago.TarjetaCredito,
@@ -93,9 +93,9 @@ namespace AppForSEII.UT
             await SeedDatabaseAsync();
             var clienteExistente = new Cliente(
                 "cliente-1",
-                "Faris",
-                "Badr",
-                "faris.badr1@alu.uclm.es",
+                "Juan",
+                "Perez",
+                "juan.perez@alu.uclm.es",
                 "Campus Universitario UCLM"
             )
             {
@@ -112,8 +112,8 @@ namespace AppForSEII.UT
             };
 
             var reservaDTO = new ReservaImpresoraCreateDTO(
-                "Faris",
-                "Badr",
+                "Juan",
+                "Perez",
                 "Campus Universitario UCLM",
                 "612345678",
                 MetodoPago.PayPal,
@@ -146,8 +146,8 @@ namespace AppForSEII.UT
             var reservaEsperada = new ReservaImpresoraDetailDTO(
                 reservaObtenida.Id,
                 reservaObtenida.FechaReserva,
-                "Faris",
-                "Badr",
+                "Juan",
+                "Perez",
                 "Campus Universitario UCLM",
                 "612345678",
                 MetodoPago.PayPal,
@@ -171,8 +171,8 @@ namespace AppForSEII.UT
             };
 
             var reservaDTO = new ReservaImpresoraCreateDTO(
-                "Faris",
-                "Badr",
+                "Juan",
+                "Perez",
                 "Campus Universitario UCLM",
                 "612345678",
                 MetodoPago.TarjetaCredito,
@@ -194,8 +194,8 @@ namespace AppForSEII.UT
             var controller = new ReservaImpresorasController(_context, _loggerMock.Object);
 
             var reservaDTO = new ReservaImpresoraCreateDTO(
-                "Faris",
-                "Badr",
+                "Juan",
+                "Perez",
                 "Campus Universitario UCLM",
                 "612345678",
                 MetodoPago.TarjetaCredito,
@@ -223,8 +223,8 @@ namespace AppForSEII.UT
             };
 
             var reservaDTO = new ReservaImpresoraCreateDTO(
-                "Faris",
-                "Badr",
+                "Juan",
+                "Perez",
                 "Campus Universitario UCLM",
                 "612345678",
                 MetodoPago.TarjetaCredito,
@@ -247,8 +247,8 @@ namespace AppForSEII.UT
             controller.ModelState.AddModelError("Error", "Error de modelo forzado");
 
             var reservaDTO = new ReservaImpresoraCreateDTO(
-                "Faris",
-                "Badr",
+                "Juan",
+                "Perez",
                 "Campus Universitario UCLM",
                 "612345678",
                 MetodoPago.TarjetaCredito,
@@ -261,6 +261,101 @@ namespace AppForSEII.UT
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
             Assert.Equal("Los datos de la reserva no son válidos.", badRequestResult.Value);
+        }
+
+        [Fact]
+        public async Task GetReservaImpresora_IdExistente_DevuelveOkConDetalles()
+        {
+            // Arrange
+            await SeedDatabaseAsync();
+            var cliente = new Cliente(
+                "cliente-test",
+                "Juan",
+                "Perez",
+                "juan.perez@alu.uclm.es",
+                "Campus Universitario UCLM"
+            )
+            {
+                PhoneNumber = "612345678"
+            };
+            _context.Clientes.Add(cliente);
+
+            var reserva = new ReservaImpresora(
+                0,
+                DateTime.Now,
+                10.40m,
+                MetodoPago.TarjetaCredito,
+                cliente.Id
+            )
+            {
+                Cliente = cliente
+            };
+
+            var impresora = await _context.Impresoras3D.FindAsync(1);
+            var linea = new LineaReserva(
+                0,
+                TiempoReserva.DosHoras,
+                10.40m,
+                1,
+                0
+            )
+            {
+                Impresora = impresora!
+            };
+            reserva.LineasReserva.Add(linea);
+
+            _context.ReservasImpresoras.Add(reserva);
+            await _context.SaveChangesAsync();
+
+            var controller = new ReservaImpresorasController(_context, _loggerMock.Object);
+
+            var lineasEsperadas = new List<LineaReservaItemDTO>
+            {
+                new LineaReservaItemDTO(
+                    "Creality Ender 3",
+                    "V2",
+                    TipoImpresora.Filamento,
+                    "Impresora FDM para filamento PLA/PETG",
+                    TiempoReserva.DosHoras,
+                    0.20m,
+                    10.0m,
+                    10.40m
+                )
+            };
+
+            var reservaEsperada = new ReservaImpresoraDetailDTO(
+                reserva.Id,
+                reserva.FechaReserva,
+                "Juan",
+                "Perez",
+                "Campus Universitario UCLM",
+                "612345678",
+                MetodoPago.TarjetaCredito,
+                10.40m,
+                lineasEsperadas
+            );
+
+            // Act
+            var result = await controller.GetReservaImpresora(reserva.Id);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var reservaObtenida = Assert.IsType<ReservaImpresoraDetailDTO>(okResult.Value);
+            Assert.True(reservaEsperada.Equals(reservaObtenida));
+        }
+
+        [Fact]
+        public async Task GetReservaImpresora_IdInexistente_DevuelveNotFound()
+        {
+            // Arrange
+            var controller = new ReservaImpresorasController(_context, _loggerMock.Object);
+
+            // Act
+            var result = await controller.GetReservaImpresora(999);
+
+            // Assert
+            var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal("La reserva con ID 999 no existe.", notFoundResult.Value);
         }
     }
 }
