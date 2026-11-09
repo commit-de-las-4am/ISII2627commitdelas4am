@@ -1,0 +1,13 @@
+@startuml
+class LineaCompraAccesorio {
+    + Id : int <<get>> <<set>>
+    + Cantidad : int <<get>> <<set>>
+    + PrecioUnitario : decimal <<get>> <<set>>
+    + CompraAccesoriosId : int <<get>> <<set>>
+    + AccesorioId : int <<get>> <<set>>
+    + LineaCompraAccesorio()
+    + LineaCompraAccesorio(id:int, cantidad:int, precioUnitario:decimal, compra:CompraAccesorios, accesorio:Accesorio)
+}
+LineaCompraAccesorio --> "Compra" CompraAccesorios
+LineaCompraAccesorio --> "Accesorio" Accesorio
+@enduml
