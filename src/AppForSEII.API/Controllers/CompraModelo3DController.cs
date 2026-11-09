@@ -69,7 +69,7 @@ public class CompraModelo3DController : ControllerBase
             compraParaCrear.ApellidosCliente,
             compraParaCrear.CorreoElectronico,
             compraParaCrear.DireccionFacturacion,
-            compraParaCrear.Descripcion ?? string.Empty,
+            compraParaCrear.Descripcion,
             0m,
             compraParaCrear.MetodoPago,
             cliente.Id
