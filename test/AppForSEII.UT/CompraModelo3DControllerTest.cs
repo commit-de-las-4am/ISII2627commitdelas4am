@@ -20,7 +20,6 @@ namespace AppForSEII.UT.CompraModelo3DControllerTest
                     Licencia("Licencia Estándar", _licenciaVigenteHasta)),   
                 Modelo("Dragon de fuego", "Personajes", FormatoModelo3D.STL, 25.50m,
                     Licencia("Licencia Estándar", _licenciaVigenteHasta)),   
-                // sin licencias vigentes: no se puede comprar
                 Modelo("Jarron antiguo", "Decoracion", FormatoModelo3D.TresMF, 8.00m,
                     Licencia("Licencia Caducada", _licenciaCaducadaEn)),     
             };
@@ -115,7 +114,6 @@ namespace AppForSEII.UT.CompraModelo3DControllerTest
         [Trait("LevelTesting", "Unit Testing")]
         public async Task CreateCompraModelo3D_DatosNoValidos_BadRequest_test()
         {
-            //Arrange: flujo alternativo 7.1, falta algún dato obligatorio
             var mock = new Mock<ILogger<CompraModelo3DController>>();
             var controller = new CompraModelo3DController(_context, mock.Object);
             controller.ModelState.AddModelError("DireccionFacturacion", "La dirección de facturación es obligatoria");
