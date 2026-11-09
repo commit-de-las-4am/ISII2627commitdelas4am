@@ -15,7 +15,7 @@ public class CompraModelo3D
         ClienteId = string.Empty;
     }
 
-    public CompraModelo3D( DateTime fechaCompra, string nombreCliente, string apellidosCliente, string correoElectronico, string direccionFacturacion, string descripcion, decimal precioTotal, MetodoPago metodoPago, string clienteId)
+    public CompraModelo3D( DateTime fechaCompra, string nombreCliente, string apellidosCliente, string correoElectronico, string direccionFacturacion, string? descripcion, decimal precioTotal, MetodoPago metodoPago, string clienteId)
     {
         FechaCompra = fechaCompra;
         NombreCliente = nombreCliente;
