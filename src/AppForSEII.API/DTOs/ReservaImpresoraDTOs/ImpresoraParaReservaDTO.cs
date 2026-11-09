@@ -1,6 +1,6 @@
 using AppForSEII.API.Models;
 
-namespace AppForSEII.API.DTOs.ImpresoraDTOs;
+namespace AppForSEII.API.DTOs.ReservaImpresoraDTOs;
 
 public class ImpresoraParaReservaDTO
 {
