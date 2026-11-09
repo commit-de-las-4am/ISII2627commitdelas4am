@@ -22,7 +22,6 @@ namespace AppForSEII.UT.Modelo3DControllerTest
                     Licencia(_nombreLicenciaCaducada, _licenciaCaducadaEn)),                   
                 Modelo("Jarron moderno", "Decoracion", FormatoModelo3D.TresMF, 8.00m,
                     Licencia(_nombreLicenciaVigente, _licenciaVigenteHasta)),                  
-                // todas sus licencias están caducadas: no tiene que salir
                 Modelo("Modelo antiguo", "Decoracion", FormatoModelo3D.STL, 5.00m,
                     Licencia(_nombreLicenciaCaducada, _licenciaCaducadaEn)),                   
             };
