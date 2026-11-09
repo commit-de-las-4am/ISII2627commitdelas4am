@@ -63,19 +63,18 @@ public class CompraModelo3DController : ControllerBase
         var modelos = await _context.Modelos3D.Include(m => m.Licencias).Where(m => idsModelos.Contains(m.Id)).ToDictionaryAsync(m => m.Id);
 
         var ahora = DateTime.Now;
-        var compra = new CompraModelo3D
-        {
-            FechaCompra = ahora,
-            NombreCliente = compraParaCrear.NombreCliente,
-            ApellidosCliente = compraParaCrear.ApellidosCliente,
-            CorreoElectronico = compraParaCrear.CorreoElectronico,
-            DireccionFacturacion = compraParaCrear.DireccionFacturacion,
-            Descripcion = compraParaCrear.Descripcion,
-            MetodoPago = compraParaCrear.MetodoPago,
-            ClienteId = cliente.Id,
-            Cliente = cliente,
-            LineasCompraModelo = new List<LineaCompraModelo>()
-        };
+        var compra = new CompraModelo3D(
+            ahora,
+            compraParaCrear.NombreCliente,
+            compraParaCrear.ApellidosCliente,
+            compraParaCrear.CorreoElectronico,
+            compraParaCrear.DireccionFacturacion,
+            compraParaCrear.Descripcion ?? string.Empty,
+            0m,
+            compraParaCrear.MetodoPago,
+            cliente.Id
+        );
+        compra.Cliente = cliente;
 
         foreach (var lineaDto in compraParaCrear.LineasCompra)
         {
@@ -91,15 +90,18 @@ public class CompraModelo3DController : ControllerBase
                 return BadRequest($"Error: el modelo 3D '{modelo.Nombre}' no tiene licencias vigentes.");
             }
 
-            compra.LineasCompraModelo.Add(new LineaCompraModelo
-            {
-                CantidadLicencias = lineaDto.CantidadLicencias,
-                PrecioUnidad = modelo.Precio,
-                Subtotal = lineaDto.CantidadLicencias * modelo.Precio,
-                Modelo3DId = modelo.Id,
-                Modelo3D = modelo,
-                CompraModelo3D = compra
-            });
+            var linea = new LineaCompraModelo(
+                0,
+                lineaDto.CantidadLicencias,
+                modelo.Precio,
+                lineaDto.CantidadLicencias * modelo.Precio
+            );
+            linea.Modelo3DId = modelo.Id;
+            linea.Modelo3D = modelo;
+            linea.CompraModelo3D = compra;
+
+            compra.LineasCompraModelo.Add(linea);
+
         }
 
         compra.PrecioTotal = compra.LineasCompraModelo.Sum(l => l.Subtotal);
