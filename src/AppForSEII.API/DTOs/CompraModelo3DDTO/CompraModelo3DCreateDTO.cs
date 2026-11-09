@@ -1,16 +1,16 @@
 namespace AppForSEII.API.DTOs.Modelo3DDTOs;
-public class CompraModelo3DDTO
+public class CompraModelo3DCreateDTO
 {
-    public CompraModelo3DDTO()
+    public CompraModelo3DCreateDTO()
     {
         NombreCliente = string.Empty;
         ApellidosCliente = string.Empty;
         CorreoElectronico = string.Empty;
         DireccionFacturacion = string.Empty;
-        LineasCompra = new List<LineaCompraModelo3DDTO>();
+        LineasCompra = new List<LineaCompraModelo3DCreateDTO>();
     }
 
-    public CompraModelo3DDTO(string nombreCliente, string apellidosCliente, string correoElectronico, string direccionFacturacion, string? descripcion, MetodoPago metodoPago, List<LineaCompraModelo3DDTO> lineasCompra)
+    public CompraModelo3DCreateDTO(string nombreCliente, string apellidosCliente, string correoElectronico, string direccionFacturacion, string? descripcion, MetodoPago metodoPago, List<LineaCompraModelo3DCreateDTO> lineasCompra)
     {
         NombreCliente = nombreCliente;
         ApellidosCliente = apellidosCliente;
@@ -45,11 +45,11 @@ public class CompraModelo3DDTO
     public MetodoPago MetodoPago { get; set; }
 
     [Required(ErrorMessage = "Debe haber al menos un modelo 3D")]
-    public List<LineaCompraModelo3DDTO> LineasCompra { get; set; }
+    public List<LineaCompraModelo3DCreateDTO> LineasCompra { get; set; }
 
     public override bool Equals(object? obj)
     {
-        return obj is CompraModelo3DDTO otro &&
+        return obj is CompraModelo3DCreateDTO otro &&
                NombreCliente == otro.NombreCliente &&
                ApellidosCliente == otro.ApellidosCliente &&
                CorreoElectronico == otro.CorreoElectronico &&

@@ -18,7 +18,7 @@ public class CompraModelo3DController : ControllerBase
     [Route("[action]")]
     [ProducesResponseType(typeof(CompraModelo3DDetailDTO), (int)HttpStatusCode.Created)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-    public async Task<ActionResult> CreateCompraModelo3D([FromBody] CompraModelo3DDTO compraParaCrear)
+    public async Task<ActionResult> CreateCompraModelo3D([FromBody] CompraModelo3DCreateDTO compraParaCrear)
     {
         if (!ModelState.IsValid)
         {
