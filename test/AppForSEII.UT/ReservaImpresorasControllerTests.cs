@@ -40,8 +40,8 @@ namespace AppForSEII.UT
             };
 
             var reservaDTO = new ReservaImpresoraCreateDTO(
-                "Faris",
-                "Badr",
+                "Juan",
+                "Perez",
                 "Campus Universitario UCLM",
                 "612345678",
                 MetodoPago.TarjetaCredito,
@@ -74,8 +74,8 @@ namespace AppForSEII.UT
             var reservaEsperada = new ReservaImpresoraDetailDTO(
                 reservaObtenida.Id,
                 reservaObtenida.FechaReserva,
-                "Faris",
-                "Badr",
+                "Juan",
+                "Perez",
                 "Campus Universitario UCLM",
                 "612345678",
                 MetodoPago.TarjetaCredito,
@@ -93,9 +93,9 @@ namespace AppForSEII.UT
             await SeedDatabaseAsync();
             var clienteExistente = new Cliente(
                 "cliente-1",
-                "Faris",
-                "Badr",
-                "faris.badr1@alu.uclm.es",
+                "Juan",
+                "Perez",
+                "juan.perez@alu.uclm.es",
                 "Campus Universitario UCLM"
             )
             {
@@ -112,8 +112,8 @@ namespace AppForSEII.UT
             };
 
             var reservaDTO = new ReservaImpresoraCreateDTO(
-                "Faris",
-                "Badr",
+                "Juan",
+                "Perez",
                 "Campus Universitario UCLM",
                 "612345678",
                 MetodoPago.PayPal,
@@ -146,8 +146,8 @@ namespace AppForSEII.UT
             var reservaEsperada = new ReservaImpresoraDetailDTO(
                 reservaObtenida.Id,
                 reservaObtenida.FechaReserva,
-                "Faris",
-                "Badr",
+                "Juan",
+                "Perez",
                 "Campus Universitario UCLM",
                 "612345678",
                 MetodoPago.PayPal,
@@ -171,8 +171,8 @@ namespace AppForSEII.UT
             };
 
             var reservaDTO = new ReservaImpresoraCreateDTO(
-                "Faris",
-                "Badr",
+                "Juan",
+                "Perez",
                 "Campus Universitario UCLM",
                 "612345678",
                 MetodoPago.TarjetaCredito,
@@ -194,8 +194,8 @@ namespace AppForSEII.UT
             var controller = new ReservaImpresorasController(_context, _loggerMock.Object);
 
             var reservaDTO = new ReservaImpresoraCreateDTO(
-                "Faris",
-                "Badr",
+                "Juan",
+                "Perez",
                 "Campus Universitario UCLM",
                 "612345678",
                 MetodoPago.TarjetaCredito,
@@ -223,8 +223,8 @@ namespace AppForSEII.UT
             };
 
             var reservaDTO = new ReservaImpresoraCreateDTO(
-                "Faris",
-                "Badr",
+                "Juan",
+                "Perez",
                 "Campus Universitario UCLM",
                 "612345678",
                 MetodoPago.TarjetaCredito,
@@ -247,8 +247,8 @@ namespace AppForSEII.UT
             controller.ModelState.AddModelError("Error", "Error de modelo forzado");
 
             var reservaDTO = new ReservaImpresoraCreateDTO(
-                "Faris",
-                "Badr",
+                "Juan",
+                "Perez",
                 "Campus Universitario UCLM",
                 "612345678",
                 MetodoPago.TarjetaCredito,
@@ -270,9 +270,9 @@ namespace AppForSEII.UT
             await SeedDatabaseAsync();
             var cliente = new Cliente(
                 "cliente-test",
-                "Faris",
-                "Badr",
-                "faris.badr1@alu.uclm.es",
+                "Juan",
+                "Perez",
+                "juan.perez@alu.uclm.es",
                 "Campus Universitario UCLM"
             )
             {
@@ -326,8 +326,8 @@ namespace AppForSEII.UT
             var reservaEsperada = new ReservaImpresoraDetailDTO(
                 reserva.Id,
                 reserva.FechaReserva,
-                "Faris",
-                "Badr",
+                "Juan",
+                "Perez",
                 "Campus Universitario UCLM",
                 "612345678",
                 MetodoPago.TarjetaCredito,
