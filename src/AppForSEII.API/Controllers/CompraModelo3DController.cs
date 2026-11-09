@@ -52,9 +52,7 @@ public class CompraModelo3DController : ControllerBase
             return BadRequest("Error: la cantidad de licencias debe ser al menos 1.");
         }
 
-        var repetido = compraParaCrear.LineasCompra
-            .GroupBy(l => l.Modelo3DId)
-            .FirstOrDefault(g => g.Count() > 1);
+        var repetido = compraParaCrear.LineasCompra.GroupBy(l => l.Modelo3DId).FirstOrDefault(g => g.Count() > 1);
         if (repetido != null)
         {
             _logger.LogError($"{DateTime.Now} Error: el modelo {repetido.Key} está repetido");
@@ -62,10 +60,7 @@ public class CompraModelo3DController : ControllerBase
         }
 
         var idsModelos = compraParaCrear.LineasCompra.Select(l => l.Modelo3DId).ToList();
-        var modelos = await _context.Modelos3D
-            .Include(m => m.Licencias)
-            .Where(m => idsModelos.Contains(m.Id))
-            .ToDictionaryAsync(m => m.Id);
+        var modelos = await _context.Modelos3D.Include(m => m.Licencias).Where(m => idsModelos.Contains(m.Id)).ToDictionaryAsync(m => m.Id);
 
         var ahora = DateTime.Now;
         var compra = new CompraModelo3D

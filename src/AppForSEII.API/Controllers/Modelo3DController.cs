@@ -28,8 +28,7 @@ public class Modelo3DController : ControllerBase
         }
 
         var hoy = DateTime.Now;
-        var modelos = await _context.Modelos3D
-            .Include(m => m.Licencias)
+        var modelos = await _context.Modelos3D.Include(m => m.Licencias)
             .Where(m => (nombre == null || m.Nombre.Contains(nombre))
                         && (categoria == null || m.Categoria == categoria)
                         && m.Licencias.Any(l => l.FechaExpiracion > hoy))
@@ -41,10 +40,7 @@ public class Modelo3DController : ControllerBase
             _logger.LogInformation($"{DateTime.Now} No se encontraron modelos 3D con los filtros indicados");
             return NotFound("No existen modelos 3D disponibles con los criterios seleccionados.");
         }
-        var modelosDTO = modelos
-            .Select(m => new Modelo3DParaCompraDTO(m.Id, m.Nombre, m.Categoria, m.Formato, m.Precio,
-                                                   LicenciaModelo3DDTO.VigentesDe(m)))
-            .ToList();
+        var modelosDTO = modelos.Select(m => new Modelo3DParaCompraDTO(m.Id, m.Nombre, m.Categoria, m.Formato, m.Precio,LicenciaModelo3DDTO.VigentesDe(m))).ToList();
 
         return Ok(modelosDTO);
     }

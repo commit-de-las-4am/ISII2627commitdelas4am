@@ -20,9 +20,7 @@ public class LineaCompraModelo3DDTO
 
     public override bool Equals(object? obj)
     {
-        return obj is LineaCompraModelo3DDTO otra &&
-               Modelo3DId == otra.Modelo3DId &&
-               CantidadLicencias == otra.CantidadLicencias;
+        return obj is LineaCompraModelo3DDTO otra && Modelo3DId == otra.Modelo3DId && CantidadLicencias == otra.CantidadLicencias;
     }
 
     public override int GetHashCode()

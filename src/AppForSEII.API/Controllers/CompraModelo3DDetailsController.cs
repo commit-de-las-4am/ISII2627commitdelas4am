@@ -19,12 +19,7 @@ public class CompraModelo3DDetailsController : ControllerBase
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
     public async Task<ActionResult> GetCompraModelo3D(int id)
     {
-        var compra = await _context.ComprasModelo3D
-            .Include(c => c.LineasCompraModelo)
-                .ThenInclude(l => l.Modelo3D)
-                    .ThenInclude(m => m.Licencias)
-            .Where(c => c.id == id)
-            .FirstOrDefaultAsync();
+        var compra = await _context.ComprasModelo3D.Include(c => c.LineasCompraModelo).ThenInclude(l => l.Modelo3D).ThenInclude(m => m.Licencias).Where(c => c.id == id).FirstOrDefaultAsync();
 
         if (compra == null)
         {
