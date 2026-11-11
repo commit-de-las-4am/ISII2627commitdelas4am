@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Xunit;
 using AppForSEII.UT;
 using AppForSEII.API.DTOs.AccesorioDTOs;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AppForSEII.Tests.Controllers
 {
@@ -15,6 +17,8 @@ namespace AppForSEII.Tests.Controllers
         [Fact]
         public async Task PostCompraAccesorio_ConDatosValidos_DevuelveCreated()
         {
+            int expectedStatusCode = 201;
+            
             var accesorio = new Accesorio(
                 1,
                 "Pintura Acrílica",
@@ -45,13 +49,15 @@ namespace AppForSEII.Tests.Controllers
             var result = await controller.PostCompraAccesorio(compraDTO);
 
             var actionResult = Assert.IsType<CreatedAtActionResult>(result.Result);
+            Assert.Equal(expectedStatusCode, actionResult.StatusCode);
+            
             var compraObtenida = Assert.IsType<CompraAccesorioDetailDTO>(actionResult.Value);
 
             var compraEsperada = new CompraAccesorioDetailDTO(
-                compraObtenida.Id,                 
-                compraObtenida.FechaCompra,     
+                compraObtenida.Id,                
+                compraObtenida.FechaCompra,    
                 20m,                           
-                "Calle Falsa 123",     
+                "Calle Falsa 123",    
                 new List<CompraAccesorioItemDTO>()
             );
 
@@ -82,6 +88,8 @@ namespace AppForSEII.Tests.Controllers
         [Fact]
         public async Task PostCompraAccesorio_SinStockSuficiente_DevuelveBadRequest()
         {
+            int expectedStatusCode = 400;
+            
             var accesorio = new Accesorio(
                 1,
                 "Pintura Acrílica",
@@ -107,7 +115,8 @@ namespace AppForSEII.Tests.Controllers
 
             var result = await controller.PostCompraAccesorio(compraDTO);
 
-            Assert.IsType<BadRequestObjectResult>(result.Result);
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal(expectedStatusCode, badRequestResult.StatusCode);
         }
     }
 }
