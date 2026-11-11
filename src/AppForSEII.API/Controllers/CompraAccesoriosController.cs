@@ -19,7 +19,7 @@ namespace AppForSEII.API.Controllers
         }
 
         //Get
-        [HttpGet("{id}")]
+        [HttpGet]
         [Route("GetCompraAccesorio/{id}")]
         [ProducesResponseType(typeof(CompraAccesorioDetailDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
