@@ -20,7 +20,7 @@ public class ReservaImpresorasController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet("{id}")]
+    [HttpGet]
     [Route("GetReservaImpresora/{id}")]
     [ProducesResponseType(typeof(ReservaImpresoraDetailDTO), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
