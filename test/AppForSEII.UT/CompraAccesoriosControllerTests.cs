@@ -55,12 +55,13 @@ namespace AppForSEII.Tests.Controllers
                 new List<CompraAccesorioItemDTO>()
             );
 
-            Assert.True(compraEsperada.Equals(compraObtenida));
+            Assert.Equal(compraEsperada, compraObtenida);
         }
 
         [Fact]
         public async Task PostCompraAccesorio_AccesorioNoExiste_DevuelveNotFound()
         {
+            int expectedStatusCode = 404;
             var controller = new CompraAccesoriosController(_context);
 
             var compraDTO = new CompraAccesorioCreateDTO
@@ -74,7 +75,8 @@ namespace AppForSEII.Tests.Controllers
 
             var result = await controller.PostCompraAccesorio(compraDTO);
 
-            Assert.IsType<NotFoundObjectResult>(result.Result);
+            var notFoundResult = Assert.IsType<NotFoundObjectResult>(result.Result);
+            Assert.Equal(expectedStatusCode, notFoundResult.StatusCode);
         }
 
         [Fact]
