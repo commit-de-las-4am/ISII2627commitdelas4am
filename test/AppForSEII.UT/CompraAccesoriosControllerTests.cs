@@ -138,6 +138,8 @@ namespace AppForSEII.Tests.Controllers
 
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
             Assert.Equal(expectedStatusCode, badRequestResult.StatusCode);
+            
+            Assert.Equal("¡Error! No se realizan envíos a apartados de correos", badRequestResult.Value);
         }
     }
 }
