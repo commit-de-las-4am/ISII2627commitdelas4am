@@ -71,6 +71,11 @@ namespace AppForSEII.API.Controllers
             {
                 var accesorio = await _context.Accesorios.FindAsync(lineaDTO.AccesorioId);
                 
+                if (compraDTO.DireccionEnvio != null && compraDTO.DireccionEnvio.Contains("Apartado"))
+                {
+                    return BadRequest($"¡Error! No se realizan envíos a apartados de correos");
+                }
+
                 if (accesorio == null)
                 {
                     return NotFound($"El accesorio con ID {lineaDTO.AccesorioId} no existe.");
