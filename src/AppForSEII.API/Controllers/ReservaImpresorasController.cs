@@ -81,6 +81,13 @@ public class ReservaImpresorasController : ControllerBase
             return BadRequest("Debe incluir al menos una impresora para ser reservada.");
         }
 
+       if (reservaDTO.NombreCliente == null || reservaDTO.NombreCliente.Length < 3 )
+        {
+            _logger.LogError($"{DateTime.Now} Error: El nombre del cliente debe tener al menos 3 caracteres");
+            return BadRequest("¡ERROR! El nombre debe tener al menos 3 caracteres");
+        }
+         
+
         // Buscar cliente existente o instanciar uno nuevo
         var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.Name == reservaDTO.NombreCliente && c.Surname == reservaDTO.ApellidosCliente);
         if (cliente == null)
