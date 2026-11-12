@@ -5,6 +5,7 @@ using AppForSEII.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+using System.Net;
 using Xunit;
 
 namespace AppForSEII.UT
@@ -28,6 +29,8 @@ namespace AppForSEII.UT
         }
 
         [Fact]
+        [Trait("LevelTesting", "Unit Testing")]
+        [Trait("Database", "WithoutFixture")]
         public async Task PostReservaImpresora_DatosValidosNuevoCliente_DevuelveCreatedAtAction()
         {
             // Arrange
@@ -48,13 +51,9 @@ namespace AppForSEII.UT
                 lineasDTO
             );
 
-            // Act
-            var result = await controller.PostReservaImpresora(reservaDTO);
-
-            // Assert
-            var createdResult = Assert.IsType<CreatedAtActionResult>(result.Result);
-            var reservaObtenida = Assert.IsType<ReservaImpresoraDetailDTO>(createdResult.Value);
-
+            int expectedStatusCode = (int)HttpStatusCode.Created;
+            string expectedActionName = nameof(ReservaImpresorasController.GetReservaImpresora);
+            int expectedReservaId = 1;
             // 10.0m base + (2 horas * 0.20m) = 10.40m
             decimal precioEsperado = 10.40m;
             var lineasEsperadas = new List<LineaReservaItemDTO>
@@ -72,8 +71,8 @@ namespace AppForSEII.UT
             };
 
             var reservaEsperada = new ReservaImpresoraDetailDTO(
-                reservaObtenida.Id,
-                reservaObtenida.FechaReserva,
+                expectedReservaId,
+                DateTime.Now,
                 "Juan",
                 "Perez",
                 "Campus Universitario UCLM",
@@ -83,10 +82,21 @@ namespace AppForSEII.UT
                 lineasEsperadas
             );
 
-            Assert.True(reservaEsperada.Equals(reservaObtenida));
+            // Act
+            var result = await controller.PostReservaImpresora(reservaDTO);
+
+            // Assert
+            var createdResult = Assert.IsType<CreatedAtActionResult>(result.Result);
+            Assert.Equal(expectedStatusCode, createdResult.StatusCode);
+            Assert.Equal(expectedActionName, createdResult.ActionName);
+
+            var reservaObtenida = Assert.IsType<ReservaImpresoraDetailDTO>(createdResult.Value);
+            Assert.Equal(reservaEsperada, reservaObtenida);
         }
 
         [Fact]
+        [Trait("LevelTesting", "Unit Testing")]
+        [Trait("Database", "WithoutFixture")]
         public async Task PostReservaImpresora_ClienteExistente_ReutilizaClienteYDevuelveCreatedAtAction()
         {
             // Arrange
@@ -120,13 +130,10 @@ namespace AppForSEII.UT
                 lineasDTO
             );
 
-            // Act
-            var result = await controller.PostReservaImpresora(reservaDTO);
-
-            // Assert
-            var createdResult = Assert.IsType<CreatedAtActionResult>(result.Result);
-            var reservaObtenida = Assert.IsType<ReservaImpresoraDetailDTO>(createdResult.Value);
-
+            int expectedStatusCode = (int)HttpStatusCode.Created;
+            string expectedActionName = nameof(ReservaImpresorasController.GetReservaImpresora);
+            int expectedReservaId = 1;
+            int expectedClientesCount = 1;
             // 15.0m base + (1 hora * 0.50m) = 15.50m
             decimal precioEsperado = 15.50m;
             var lineasEsperadas = new List<LineaReservaItemDTO>
@@ -144,8 +151,8 @@ namespace AppForSEII.UT
             };
 
             var reservaEsperada = new ReservaImpresoraDetailDTO(
-                reservaObtenida.Id,
-                reservaObtenida.FechaReserva,
+                expectedReservaId,
+                DateTime.Now,
                 "Juan",
                 "Perez",
                 "Campus Universitario UCLM",
@@ -155,10 +162,22 @@ namespace AppForSEII.UT
                 lineasEsperadas
             );
 
-            Assert.True(reservaEsperada.Equals(reservaObtenida));
+            // Act
+            var result = await controller.PostReservaImpresora(reservaDTO);
+
+            // Assert
+            var createdResult = Assert.IsType<CreatedAtActionResult>(result.Result);
+            Assert.Equal(expectedStatusCode, createdResult.StatusCode);
+            Assert.Equal(expectedActionName, createdResult.ActionName);
+
+            var reservaObtenida = Assert.IsType<ReservaImpresoraDetailDTO>(createdResult.Value);
+            Assert.Equal(reservaEsperada, reservaObtenida);
+            Assert.Equal(expectedClientesCount, _context.Clientes.Count());
         }
 
         [Fact]
+        [Trait("LevelTesting", "Unit Testing")]
+        [Trait("Database", "WithoutFixture")]
         public async Task PostReservaImpresora_ImpresoraNoExiste_DevuelveNotFound()
         {
             // Arrange
@@ -179,15 +198,21 @@ namespace AppForSEII.UT
                 lineasDTO
             );
 
+            int expectedStatusCode = (int)HttpStatusCode.NotFound;
+            string expectedMessage = "La impresora con ID 999 no existe.";
+
             // Act
             var result = await controller.PostReservaImpresora(reservaDTO);
 
             // Assert
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result.Result);
-            Assert.Equal("La impresora con ID 999 no existe.", notFoundResult.Value);
+            Assert.Equal(expectedStatusCode, notFoundResult.StatusCode);
+            Assert.Equal(expectedMessage, notFoundResult.Value);
         }
 
         [Fact]
+        [Trait("LevelTesting", "Unit Testing")]
+        [Trait("Database", "WithoutFixture")]
         public async Task PostReservaImpresora_SinLineasDeReserva_DevuelveBadRequest()
         {
             // Arrange
@@ -202,15 +227,21 @@ namespace AppForSEII.UT
                 new List<LineaReservaCreateDTO>()
             );
 
+            int expectedStatusCode = (int)HttpStatusCode.BadRequest;
+            string expectedMessage = "Debe incluir al menos una impresora para ser reservada.";
+
             // Act
             var result = await controller.PostReservaImpresora(reservaDTO);
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
-            Assert.Equal("Debe incluir al menos una impresora para ser reservada.", badRequestResult.Value);
+            Assert.Equal(expectedStatusCode, badRequestResult.StatusCode);
+            Assert.Equal(expectedMessage, badRequestResult.Value);
         }
 
         [Fact]
+        [Trait("LevelTesting", "Unit Testing")]
+        [Trait("Database", "WithoutFixture")]
         public async Task PostReservaImpresora_TiempoReservaNoValido_DevuelveBadRequest()
         {
             // Arrange
@@ -231,15 +262,21 @@ namespace AppForSEII.UT
                 lineasDTO
             );
 
+            int expectedStatusCode = (int)HttpStatusCode.BadRequest;
+            string expectedMessage = "El tiempo de reserva especificado no es válido para la impresora Creality Ender 3.";
+
             // Act
             var result = await controller.PostReservaImpresora(reservaDTO);
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
-            Assert.Equal("El tiempo de reserva especificado no es válido para la impresora Creality Ender 3.", badRequestResult.Value);
+            Assert.Equal(expectedStatusCode, badRequestResult.StatusCode);
+            Assert.Equal(expectedMessage, badRequestResult.Value);
         }
 
         [Fact]
+        [Trait("LevelTesting", "Unit Testing")]
+        [Trait("Database", "WithoutFixture")]
         public async Task PostReservaImpresora_ModelStateInvalido_DevuelveBadRequest()
         {
             // Arrange
@@ -255,15 +292,21 @@ namespace AppForSEII.UT
                 new List<LineaReservaCreateDTO>()
             );
 
+            int expectedStatusCode = (int)HttpStatusCode.BadRequest;
+            string expectedMessage = "Los datos de la reserva no son válidos.";
+
             // Act
             var result = await controller.PostReservaImpresora(reservaDTO);
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
-            Assert.Equal("Los datos de la reserva no son válidos.", badRequestResult.Value);
+            Assert.Equal(expectedStatusCode, badRequestResult.StatusCode);
+            Assert.Equal(expectedMessage, badRequestResult.Value);
         }
 
         [Fact]
+        [Trait("LevelTesting", "Unit Testing")]
+        [Trait("Database", "WithoutFixture")]
         public async Task GetReservaImpresora_IdExistente_DevuelveOkConDetalles()
         {
             // Arrange
@@ -323,6 +366,7 @@ namespace AppForSEII.UT
                 )
             };
 
+            int expectedStatusCode = (int)HttpStatusCode.OK;
             var reservaEsperada = new ReservaImpresoraDetailDTO(
                 reserva.Id,
                 reserva.FechaReserva,
@@ -340,22 +384,130 @@ namespace AppForSEII.UT
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(expectedStatusCode, okResult.StatusCode);
+
             var reservaObtenida = Assert.IsType<ReservaImpresoraDetailDTO>(okResult.Value);
-            Assert.True(reservaEsperada.Equals(reservaObtenida));
+            Assert.Equal(reservaEsperada, reservaObtenida);
         }
 
         [Fact]
+        [Trait("LevelTesting", "Unit Testing")]
+        [Trait("Database", "WithoutFixture")]
         public async Task GetReservaImpresora_IdInexistente_DevuelveNotFound()
         {
             // Arrange
             var controller = new ReservaImpresorasController(_context, _loggerMock.Object);
+            int expectedStatusCode = (int)HttpStatusCode.NotFound;
+            string expectedMessage = "La reserva con ID 999 no existe.";
 
             // Act
             var result = await controller.GetReservaImpresora(999);
 
             // Assert
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-            Assert.Equal("La reserva con ID 999 no existe.", notFoundResult.Value);
+            Assert.Equal(expectedStatusCode, notFoundResult.StatusCode);
+            Assert.Equal(expectedMessage, notFoundResult.Value);
+        }
+
+        [Theory]
+        [Trait("LevelTesting", "Unit Testing")]
+        [Trait("Database", "WithoutFixture")]
+        [InlineData(TiempoReserva.TresHoras, 3)]
+        [InlineData(TiempoReserva.CuatroHoras, 4)]
+        [InlineData(TiempoReserva.CincoHoras, 5)]
+        [InlineData(TiempoReserva.UnDia, 24)]
+        [InlineData(TiempoReserva.DosDias, 48)]
+        public async Task PostReservaImpresora_TodosLosTiemposDeReserva_CalculaPrecioCorrecto(
+            TiempoReserva tiempoReserva,
+            int horasEsperadas)
+        {
+            // Arrange
+            await SeedDatabaseAsync();
+            var controller = new ReservaImpresorasController(_context, _loggerMock.Object);
+
+            var lineasDTO = new List<LineaReservaCreateDTO>
+            {
+                new LineaReservaCreateDTO(1, tiempoReserva)
+            };
+
+            var reservaDTO = new ReservaImpresoraCreateDTO(
+                "Juan",
+                "Perez",
+                "Campus Universitario UCLM",
+                "612345678",
+                MetodoPago.TarjetaCredito,
+                lineasDTO
+            );
+
+            int expectedStatusCode = (int)HttpStatusCode.Created;
+            string expectedActionName = nameof(ReservaImpresorasController.GetReservaImpresora);
+            int expectedReservaId = 1;
+            decimal precioEsperado = 10.0m + (horasEsperadas * 0.20m);
+            var lineasEsperadas = new List<LineaReservaItemDTO>
+            {
+                new LineaReservaItemDTO(
+                    "Creality Ender 3",
+                    "V2",
+                    TipoImpresora.Filamento,
+                    "Impresora FDM para filamento PLA/PETG",
+                    tiempoReserva,
+                    0.20m,
+                    10.0m,
+                    precioEsperado
+                )
+            };
+
+            var reservaEsperada = new ReservaImpresoraDetailDTO(
+                expectedReservaId,
+                DateTime.Now,
+                "Juan",
+                "Perez",
+                "Campus Universitario UCLM",
+                "612345678",
+                MetodoPago.TarjetaCredito,
+                precioEsperado,
+                lineasEsperadas
+            );
+
+            // Act
+            var result = await controller.PostReservaImpresora(reservaDTO);
+
+            // Assert
+            var createdResult = Assert.IsType<CreatedAtActionResult>(result.Result);
+            Assert.Equal(expectedStatusCode, createdResult.StatusCode);
+            Assert.Equal(expectedActionName, createdResult.ActionName);
+
+            var reservaObtenida = Assert.IsType<ReservaImpresoraDetailDTO>(createdResult.Value);
+            Assert.Equal(reservaEsperada, reservaObtenida);
+        }
+
+        [Fact]
+        [Trait("LevelTesting", "Unit Testing")]
+        [Trait("Database", "WithoutFixture")]
+        public async Task PostReservaImpresora_LineasReservaNull_DevuelveBadRequest()
+        {
+            // Arrange
+            var controller = new ReservaImpresorasController(_context, _loggerMock.Object);
+
+            var reservaDTO = new ReservaImpresoraCreateDTO(
+                "Juan",
+                "Perez",
+                "Campus Universitario UCLM",
+                "612345678",
+                MetodoPago.TarjetaCredito,
+                null!
+            );
+
+            int expectedStatusCode = (int)HttpStatusCode.BadRequest;
+            string expectedMessage = "Debe incluir al menos una impresora para ser reservada.";
+
+            // Act
+            var result = await controller.PostReservaImpresora(reservaDTO);
+
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal(expectedStatusCode, badRequestResult.StatusCode);
+            Assert.Equal(expectedMessage, badRequestResult.Value);
         }
     }
 }
