@@ -84,6 +84,12 @@ public class CompraModelo3DController : ControllerBase
                 return BadRequest("El modelo 3D seleccionado no existe.");
             }
 
+            if (compraParaCrear.NombreCliente.Equals("Cliente"))
+            {
+                _logger.LogError($"{DateTime.Now} Error: El nombre {compraParaCrear.NombreCliente} no es válido");
+                return BadRequest($"¡Error! {compraParaCrear.NombreCliente} no es un nombre válido");
+            }
+
             if (modelo.Licencias == null || !modelo.Licencias.Any(l => l.FechaExpiracion > ahora))
             {
                 _logger.LogError($"{DateTime.Now} Error: el modelo 3D {modelo.Id} no tiene licencias vigentes.");

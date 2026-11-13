@@ -80,6 +80,9 @@ namespace AppForSEII.UT.CompraModelo3DControllerTest
             
             var modeloSinLicenciaVigente = new CompraModelo3DCreateDTO(_nombre, _apellidos, _correo, _direccion, null,
                 MetodoPago.TarjetaCredito, new List<LineaCompraModelo3DCreateDTO>() { new LineaCompraModelo3DCreateDTO(3, 1) });
+            
+            var modeloNombreCliente= new CompraModelo3DCreateDTO("Cliente", _apellidos, _correo, _direccion, null,
+                MetodoPago.PayPal, lineasValidas);
 
             var allTests = new List<object[]>
             {
@@ -90,6 +93,7 @@ namespace AppForSEII.UT.CompraModelo3DControllerTest
                 new object[] { cantidadCero, "Error: la cantidad de licencias debe ser al menos 1." },
                 new object[] { modeloRepetido, "Error: el modelo 3D con id 1 aparece repetido en la compra." },
                 new object[] { modeloSinLicenciaVigente, "Error: el modelo 3D 'Jarron antiguo' no tiene licencias vigentes." },
+                new object[] { modeloNombreCliente, "¡Error! Cliente no es un nombre válido"},
             };
             return allTests;
         }
