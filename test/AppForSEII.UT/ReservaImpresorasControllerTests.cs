@@ -509,5 +509,40 @@ namespace AppForSEII.UT
             Assert.Equal(expectedStatusCode, badRequestResult.StatusCode);
             Assert.Equal(expectedMessage, badRequestResult.Value);
         }
+        
+        [Fact]
+        [Trait("LevelTesting", "Unit Testing")]
+        [Trait("Database", "WithoutFixture")]
+        public async Task PostReservaImpresora_NombreMenorA3Caracteres_DevuelveBadRequest()
+        {
+            // Arrange
+            await SeedDatabaseAsync();
+            var controller = new ReservaImpresorasController(_context, _loggerMock.Object);
+
+            var lineasDTO = new List<LineaReservaCreateDTO>
+            {
+                new LineaReservaCreateDTO(1, TiempoReserva.UnaHora)
+            };
+
+            var reservaDTO = new ReservaImpresoraCreateDTO(
+                "Al",
+                "Perez",
+                "Campus Universitario UCLM",
+                "612345678",
+                MetodoPago.TarjetaCredito,
+                lineasDTO
+            );
+
+            int expectedStatusCode = (int)HttpStatusCode.BadRequest;
+            string expectedMessage = "¡ERROR! El nombre debe tener al menos 3 caracteres";
+
+            // Act
+            var result = await controller.PostReservaImpresora(reservaDTO);
+
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal(expectedStatusCode, badRequestResult.StatusCode);
+            Assert.Equal(expectedMessage, badRequestResult.Value);
+        }   
     }
 }
