@@ -118,5 +118,28 @@ namespace AppForSEII.Tests.Controllers
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
             Assert.Equal(expectedStatusCode, badRequestResult.StatusCode);
         }
+        [Fact]
+        public async Task PostCompraAccesorio_DireccionContieneApartado_DevuelveBadRequest()
+        {
+            int expectedStatusCode = 400;
+            var controller = new CompraAccesoriosController(_context);
+            
+            var compraDTO = new CompraAccesorioCreateDTO
+            {
+                NombreCliente = "Pepe",
+                DireccionEnvio = "Apartado de correos 123",
+                LineasCompra = new List<LineaCompraAccesorioCreateDTO>
+                {
+                    new LineaCompraAccesorioCreateDTO { AccesorioId = 1, Cantidad = 1 }
+                }
+            };
+
+            var result = await controller.PostCompraAccesorio(compraDTO);
+
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal(expectedStatusCode, badRequestResult.StatusCode);
+            
+            Assert.Equal("¡Error! No se realizan envíos a apartados de correos", badRequestResult.Value);
+        }
     }
 }
