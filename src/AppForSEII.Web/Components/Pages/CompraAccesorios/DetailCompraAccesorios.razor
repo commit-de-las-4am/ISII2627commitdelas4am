@@ -12,7 +12,7 @@
 
     @if (!string.IsNullOrEmpty(error))
     {
-        <div class="alert alert-danger" role="alert">@error</div>
+        <div class="alert alert-danger" role="alert" id="ErrorsShown">@error</div>
     }
     else if (compra == null)
     {
@@ -22,10 +22,19 @@
     {
         <div class="card mb-4">
             <div class="card-body">
-                <h5 class="card-title">Compra #@compra.Id</h5>
-                <p class="mb-1"><strong>Fecha de compra:</strong> @compra.FechaCompra.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</p>
-                <p class="mb-1"><strong>Dirección de envío:</strong> @compra.DireccionEnvio</p>
-                <p class="mb-0"><strong>Precio total:</strong> @compra.PrecioTotal.ToString("0.00") €</p>
+                <h5 class="card-title" id="CompraId">Compra #@compra.Id</h5>
+                <p class="mb-1">
+                    <strong>Fecha de compra:</strong>
+                    <span id="FechaCompra">@compra.FechaCompra.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</span>
+                </p>
+                <p class="mb-1">
+                    <strong>Dirección de envío:</strong>
+                    <span id="DireccionEnvio">@compra.DireccionEnvio</span>
+                </p>
+                <p class="mb-0">
+                    <strong>Precio total:</strong>
+                    <span id="PrecioTotal">@compra.PrecioTotal.ToString("0.00") €</span>
+                </p>
             </div>
         </div>
 
@@ -44,7 +53,7 @@
                 {
                     @foreach (var item in compra.LineasCompra)
                     {
-                        <tr>
+                        <tr id="AccesorioData_@item.NombreAccesorio">
                             <td>@item.NombreAccesorio</td>
                             <td>@item.Cantidad</td>
                             <td>@item.PrecioUnitario.ToString("0.00") €</td>
@@ -53,10 +62,16 @@
                     }
                 }
             </tbody>
+            <tfoot>
+                <tr>
+                    <th scope="row" colspan="3" class="text-end">Precio total</th>
+                    <td id="TotalPrice">@compra.PrecioTotal.ToString("0.00") €</td>
+                </tr>
+            </tfoot>
         </table>
     }
 
-    <button class="btn btn-primary mt-2" @onclick="NuevaCompra">
+    <button class="btn btn-primary mt-2" id="NuevaCompra" @onclick="NuevaCompra">
         Realizar otra compra
     </button>
 </div>
