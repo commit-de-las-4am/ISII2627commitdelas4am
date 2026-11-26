@@ -1,0 +1,97 @@
+@page "/compraaccesorios/detailcompra"
+@rendermode InteractiveServer
+
+@using AppForSEII.Web.API
+@inject IAppForSEIIAPIClient apiservice
+@inject NavigationManager navigation
+
+<PageTitle>Detalle de la Compra</PageTitle>
+
+<div class="container">
+    <h3>Detalle de la Compra</h3>
+
+    @if (!string.IsNullOrEmpty(error))
+    {
+        <div class="alert alert-danger" role="alert">@error</div>
+    }
+    else if (compra == null)
+    {
+        <p><em>Cargando detalles de la compra...</em></p>
+    }
+    else
+    {
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Compra #@compra.Id</h5>
+                <p class="mb-1"><strong>Fecha de compra:</strong> @compra.FechaCompra.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</p>
+                <p class="mb-1"><strong>Dirección de envío:</strong> @compra.DireccionEnvio</p>
+                <p class="mb-0"><strong>Precio total:</strong> @compra.PrecioTotal.ToString("0.00") €</p>
+            </div>
+        </div>
+
+        <h4>Accesorios comprados</h4>
+        <table class="table table-striped" id="PurchasedAccesorios">
+            <thead>
+                <tr>
+                    <th>Accesorio</th>
+                    <th>Cantidad</th>
+                    <th>Precio unitario</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (compra.LineasCompra != null)
+                {
+                    @foreach (var item in compra.LineasCompra)
+                    {
+                        <tr>
+                            <td>@item.NombreAccesorio</td>
+                            <td>@item.Cantidad</td>
+                            <td>@item.PrecioUnitario.ToString("0.00") €</td>
+                            <td>@((item.Cantidad * item.PrecioUnitario).ToString("0.00")) €</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+
+    <button class="btn btn-primary mt-2" @onclick="NuevaCompra">
+        Realizar otra compra
+    </button>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    public int CompraID { get; set; }
+
+    private CompraAccesorioDetailDTO? compra;
+    private string error = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (CompraID <= 0)
+        {
+            error = "No se ha indicado un identificador de compra válido.";
+            return;
+        }
+
+        try
+        {
+            compra = await apiservice.GetCompraAccesorioAsync(CompraID);
+        }
+        catch (ApiException ex)
+        {
+            error = $"No se pudo cargar el detalle de la compra ({ex.StatusCode}).";
+        }
+        catch (Exception ex)
+        {
+            error = $"Error al conectar con la API: {ex.Message}";
+        }
+    }
+
+    private void NuevaCompra()
+    {
+        navigation.NavigateTo("/compraaccesorios/selectaccesoriosforpurchase");
+    }
+}

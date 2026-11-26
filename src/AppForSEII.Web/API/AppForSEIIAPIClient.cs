@@ -63,14 +63,14 @@ namespace AppForSEII.Web.API
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<CompraAccesorioDetailDTO> GetCompraAccesorioAsync(int id, System.Threading.CancellationToken cancellationToken);
 
-        /// <returns>OK</returns>
+        /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<CompraAccesorios> PostCompraAccesorioAsync(CompraAccesorioCreateDTO body);
+        System.Threading.Tasks.Task<CompraAccesorioDetailDTO> PostCompraAccesorioAsync(CompraAccesorioCreateDTO body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>OK</returns>
+        /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<CompraAccesorios> PostCompraAccesorioAsync(CompraAccesorioCreateDTO body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<CompraAccesorioDetailDTO> PostCompraAccesorioAsync(CompraAccesorioCreateDTO body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -514,17 +514,17 @@ namespace AppForSEII.Web.API
             }
         }
 
-        /// <returns>OK</returns>
+        /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<CompraAccesorios> PostCompraAccesorioAsync(CompraAccesorioCreateDTO body)
+        public virtual System.Threading.Tasks.Task<CompraAccesorioDetailDTO> PostCompraAccesorioAsync(CompraAccesorioCreateDTO body)
         {
             return PostCompraAccesorioAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>OK</returns>
+        /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<CompraAccesorios> PostCompraAccesorioAsync(CompraAccesorioCreateDTO body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<CompraAccesorioDetailDTO> PostCompraAccesorioAsync(CompraAccesorioCreateDTO body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -567,14 +567,34 @@ namespace AppForSEII.Web.API
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
+                        if (status_ == 201)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<CompraAccesorios>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<CompraAccesorioDetailDTO>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<string>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<string>("Bad Request", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 404)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<string>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<string>("Not Found", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -1323,36 +1343,6 @@ namespace AppForSEII.Web.API
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.8.0.0 (NJsonSchema v11.6.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Accesorio
-    {
-
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Id { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("nombre", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required]
-        [System.ComponentModel.DataAnnotations.StringLength(100, MinimumLength = 2)]
-        public string Nombre { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("categoria", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public CategoriaAccesorio Categoria { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("compatibilidad", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.StringLength(200)]
-        public string Compatibilidad { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("cantidadDisponible", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.Range(0, 2147483647)]
-        public int CantidadDisponible { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("precio", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public double Precio { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.8.0.0 (NJsonSchema v11.6.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class AccesorioParaComprarDTO
     {
 
@@ -1399,93 +1389,6 @@ namespace AppForSEII.Web.API
 
         [Newtonsoft.Json.JsonProperty("phoneNumber", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string PhoneNumber { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.8.0.0 (NJsonSchema v11.6.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum CategoriaAccesorio
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"Boquillas")]
-        Boquillas = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"BasesImpresion")]
-        BasesImpresion = 1,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"Herramientas")]
-        Herramientas = 2,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"KitsLimpieza")]
-        KitsLimpieza = 3,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"Repuestos")]
-        Repuestos = 4,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.8.0.0 (NJsonSchema v11.6.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Cliente
-    {
-
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Id { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("userName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string UserName { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("normalizedUserName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string NormalizedUserName { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("email", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Email { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("normalizedEmail", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string NormalizedEmail { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("emailConfirmed", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool EmailConfirmed { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("passwordHash", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string PasswordHash { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("securityStamp", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string SecurityStamp { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("concurrencyStamp", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ConcurrencyStamp { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("phoneNumber", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string PhoneNumber { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("phoneNumberConfirmed", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool PhoneNumberConfirmed { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("twoFactorEnabled", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool TwoFactorEnabled { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("lockoutEnd", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset? LockoutEnd { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("lockoutEnabled", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool LockoutEnabled { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("accessFailedCount", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int AccessFailedCount { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.StringLength(50)]
-        public string Name { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("surname", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.StringLength(50)]
-        public string Surname { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("direccionFacturacion", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.StringLength(200)]
-        public string DireccionFacturacion { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("compras", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<CompraModelo3D> Compras { get; set; }
 
     }
 
@@ -1553,106 +1456,6 @@ namespace AppForSEII.Web.API
 
         [Newtonsoft.Json.JsonProperty("precioUnitario", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public double PrecioUnitario { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.8.0.0 (NJsonSchema v11.6.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class CompraAccesorios
-    {
-
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Id { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("fechaCompra", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset FechaCompra { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("nombreCliente", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        [System.ComponentModel.DataAnnotations.StringLength(50)]
-        public string NombreCliente { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("apellidosCliente", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        [System.ComponentModel.DataAnnotations.StringLength(100)]
-        public string ApellidosCliente { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("direccionEnvio", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        [System.ComponentModel.DataAnnotations.StringLength(200)]
-        public string DireccionEnvio { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("numeroTelefono", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required]
-        public string NumeroTelefono { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("precioTotal", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public double PrecioTotal { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("metodoPago", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public MetodoPago MetodoPago { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("lineas", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<LineaCompraAccesorio> Lineas { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("clienteId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ClienteId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("cliente", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Cliente Cliente { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.8.0.0 (NJsonSchema v11.6.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class CompraModelo3D
-    {
-
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Id { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("fechaCompra", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.DateTimeOffset FechaCompra { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("nombreCliente", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.StringLength(100)]
-        public string NombreCliente { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("apellidosCliente", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.StringLength(100)]
-        public string ApellidosCliente { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("correoElectronico", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.StringLength(150)]
-        public string CorreoElectronico { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("direccionFacturacion", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.StringLength(200)]
-        public string DireccionFacturacion { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("descripcion", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.StringLength(500)]
-        public string Descripcion { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("precioTotal", Required = Newtonsoft.Json.Required.Always)]
-        public double PrecioTotal { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("metodoPago", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public MetodoPago MetodoPago { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("clienteId", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required]
-        public string ClienteId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("cliente", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Cliente Cliente { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("lineasCompraModelo", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<LineaCompraModelo> LineasCompraModelo { get; set; }
 
     }
 
@@ -1779,30 +1582,6 @@ namespace AppForSEII.Web.API
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.8.0.0 (NJsonSchema v11.6.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class LicenciaModelo3D
-    {
-
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Id { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("nombre", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        [System.ComponentModel.DataAnnotations.StringLength(100)]
-        public string Nombre { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("fechaExpiracion", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.DateTimeOffset FechaExpiracion { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("modelo3DId", Required = Newtonsoft.Json.Required.Always)]
-        public int Modelo3DId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("modelo3D", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Modelo3D Modelo3D { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.8.0.0 (NJsonSchema v11.6.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class LicenciaModelo3DDTO
     {
 
@@ -1819,34 +1598,6 @@ namespace AppForSEII.Web.API
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.8.0.0 (NJsonSchema v11.6.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class LineaCompraAccesorio
-    {
-
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Id { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("cantidad", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Range(1, 2147483647)]
-        public int Cantidad { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("precioUnitario", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public double PrecioUnitario { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("compraAccesoriosId", Required = Newtonsoft.Json.Required.Always)]
-        public int CompraAccesoriosId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("compra", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public CompraAccesorios Compra { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("accesorioId", Required = Newtonsoft.Json.Required.Always)]
-        public int AccesorioId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("accesorio", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Accesorio Accesorio { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.8.0.0 (NJsonSchema v11.6.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class LineaCompraAccesorioCreateDTO
     {
 
@@ -1855,36 +1606,6 @@ namespace AppForSEII.Web.API
 
         [Newtonsoft.Json.JsonProperty("cantidad", Required = Newtonsoft.Json.Required.Always)]
         public int Cantidad { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.8.0.0 (NJsonSchema v11.6.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class LineaCompraModelo
-    {
-
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Id { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("cantidadLicencias", Required = Newtonsoft.Json.Required.Always)]
-        public int CantidadLicencias { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("precioUnidad", Required = Newtonsoft.Json.Required.Always)]
-        public double PrecioUnidad { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("subtotal", Required = Newtonsoft.Json.Required.Always)]
-        public double Subtotal { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("compraModelo3DId", Required = Newtonsoft.Json.Required.Always)]
-        public int CompraModelo3DId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("compraModelo3D", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public CompraModelo3D CompraModelo3D { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("modelo3DId", Required = Newtonsoft.Json.Required.Always)]
-        public int Modelo3DId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("modelo3D", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Modelo3D Modelo3D { get; set; }
 
     }
 
@@ -1995,39 +1716,6 @@ namespace AppForSEII.Web.API
 
         [System.Runtime.Serialization.EnumMember(Value = @"Bizum")]
         Bizum = 3,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.8.0.0 (NJsonSchema v11.6.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Modelo3D
-    {
-
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int Id { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("nombre", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        [System.ComponentModel.DataAnnotations.StringLength(200)]
-        public string Nombre { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("categoria", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        [System.ComponentModel.DataAnnotations.StringLength(50)]
-        public string Categoria { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("formato", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public FormatoModelo3D Formato { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("precio", Required = Newtonsoft.Json.Required.Always)]
-        public double Precio { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("lineasCompraModelo", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<LineaCompraModelo> LineasCompraModelo { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("licencias", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<LicenciaModelo3D> Licencias { get; set; }
 
     }
 
@@ -2205,15 +1893,6 @@ namespace AppForSEII.Web.API
         [System.Runtime.Serialization.EnumMember(Value = @"Polimero")]
         Polimero = 3,
 
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.8.0.0 (NJsonSchema v11.6.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    internal class DateFormatConverter : Newtonsoft.Json.Converters.IsoDateTimeConverter
-    {
-        public DateFormatConverter()
-        {
-            DateTimeFormat = "yyyy-MM-dd";
-        }
     }
 
 

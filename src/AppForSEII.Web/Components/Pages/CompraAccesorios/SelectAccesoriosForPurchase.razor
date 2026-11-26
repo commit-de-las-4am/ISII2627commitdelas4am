@@ -1,0 +1,192 @@
+@page "/compraaccesorios/selectaccesoriosforpurchase"
+@rendermode InteractiveServer
+
+@using AppForSEII.Web.API
+@inject IAppForSEIIAPIClient apiservice
+@inject CompraAccesoriosStateContainer compraState
+@inject NavigationManager navigation
+
+<PageTitle>Comprar Accesorios</PageTitle>
+
+<div class="container">
+    @* 1. Cabecera *@
+    <h3>Seleccionar Accesorios para Comprar</h3>
+
+    @if (!string.IsNullOrEmpty(errors))
+    {
+        <div class="alert alert-danger" role="alert">@errors</div>
+    }
+
+    @* 2. Filtros *@
+    <div class="row mb-3 g-2">
+        <div class="col-md-5">
+            <input type="text" class="form-control" id="inputNombre"
+                   placeholder="Filtrar por nombre..." @bind="filtroNombre" />
+        </div>
+        <div class="col-md-5">
+            <input type="text" class="form-control" id="inputCompatibilidad"
+                   placeholder="Filtrar por compatibilidad..." @bind="filtroCompatibilidad" />
+        </div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-primary w-100" id="searchAccesorios"
+                    @onclick="SearchAccesorios">
+                Buscar
+            </button>
+        </div>
+    </div>
+
+    @* 3. Resultados (izq) y Carrito (der) *@
+    <div class="row">
+        <div class="col-md-8">
+            @if (accesorios == null)
+            {
+                <p><em>Cargando accesorios...</em></p>
+            }
+            else if (!accesorios.Any())
+            {
+                <div class="alert alert-warning">No hay accesorios disponibles con esos filtros.</div>
+            }
+            else
+            {
+                <table class="table table-striped table-hover" id="TableOfAccesorios">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Compatibilidad</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th>Añadir</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var acc in accesorios)
+                        {
+                            <tr>
+                                <td>@acc.Nombre</td>
+                                <td>@acc.Compatibilidad</td>
+                                <td>@acc.Precio.ToString("0.00") €</td>
+                                <td>@acc.CantidadDisponible</td>
+                                <td>
+                                    <button class="btn btn-outline-primary btn-sm"
+                                            id="accesorioToBuy_@acc.Id"
+                                            disabled="@(acc.CantidadDisponible <= 0)"
+                                            @onclick="() => AddAccesorio(acc)">
+                                        Añadir
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Carrito de compra</h5>
+
+                    @if (!compra.LineasCompra.Any())
+                    {
+                        <p class="text-muted">El carrito está vacío.</p>
+                    }
+                    else
+                    {
+                        <ul class="list-group mb-3">
+                            @foreach (var linea in compra.LineasCompra)
+                            {
+                                var info = compraState.GetAccesorioInfo(linea.AccesorioId);
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>@(info?.Nombre ?? $"Accesorio #{linea.AccesorioId}")</strong><br />
+                                        <small>@linea.Cantidad x @((info?.Precio ?? 0).ToString("0.00")) €</small>
+                                    </div>
+                                    <button class="btn btn-outline-danger btn-sm"
+                                            id="removeAccesorio_@linea.AccesorioId"
+                                            @onclick="() => RemoveLinea(linea)">
+                                        Quitar
+                                    </button>
+                                </li>
+                            }
+                        </ul>
+
+                        <p class="fw-bold">Total: @compraState.PrecioTotal.ToString("0.00") €</p>
+                    }
+
+                    @* 4. Acción principal *@
+                    <button class="btn btn-primary w-100" id="proceedToPurchase"
+                            disabled="@(!compra.LineasCompra.Any())"
+                            @onclick="ProceedToPurchase">
+                        Comprar accesorios
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private ICollection<AccesorioParaComprarDTO>? todosAccesorios;
+    private ICollection<AccesorioParaComprarDTO>? accesorios;
+
+    private string? filtroNombre;
+    private string? filtroCompatibilidad;
+    private string errors = "";
+
+    private CompraAccesorioCreateDTO compra => compraState.Compra;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarAccesorios();
+    }
+
+    private async Task CargarAccesorios()
+    {
+        try
+        {
+            todosAccesorios = await apiservice.GetAccesoriosParaComprarAsync();
+            errors = "";
+            SearchAccesorios();
+        }
+        catch (ApiException ex)
+        {
+            errors = $"Error al cargar los accesorios desde la API ({ex.StatusCode}).";
+            todosAccesorios = new List<AccesorioParaComprarDTO>();
+            accesorios = new List<AccesorioParaComprarDTO>();
+        }
+        catch (Exception ex)
+        {
+            errors = $"No se pudo conectar con la API: {ex.Message}";
+            todosAccesorios = new List<AccesorioParaComprarDTO>();
+            accesorios = new List<AccesorioParaComprarDTO>();
+        }
+    }
+
+    private void SearchAccesorios()
+    {
+        if (todosAccesorios == null) return;
+
+        accesorios = todosAccesorios
+            .Where(a =>
+                (string.IsNullOrWhiteSpace(filtroNombre) ||
+                    (a.Nombre?.Contains(filtroNombre, StringComparison.OrdinalIgnoreCase) ?? false)) &&
+                (string.IsNullOrWhiteSpace(filtroCompatibilidad) ||
+                    (a.Compatibilidad?.Contains(filtroCompatibilidad, StringComparison.OrdinalIgnoreCase) ?? false)))
+            .ToList();
+    }
+
+    private void AddAccesorio(AccesorioParaComprarDTO accesorio)
+    {
+        compraState.AddAccesorioToCompra(accesorio);
+    }
+
+    private void RemoveLinea(LineaCompraAccesorioCreateDTO linea)
+    {
+        compraState.RemoveLineaCompra(linea);
+    }
+
+    private void ProceedToPurchase()
+    {
+        navigation.NavigateTo("/compraaccesorios/createcompra");
+    }
+}
