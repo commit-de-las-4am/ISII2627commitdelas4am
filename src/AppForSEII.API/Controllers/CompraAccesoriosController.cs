@@ -52,7 +52,10 @@ namespace AppForSEII.API.Controllers
 
         //Post
         [HttpPost]
-        public async Task<ActionResult<CompraAccesorios>> PostCompraAccesorio(CompraAccesorioCreateDTO compraDTO)
+        [ProducesResponseType(typeof(CompraAccesorioDetailDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<CompraAccesorioDetailDTO>> PostCompraAccesorio(CompraAccesorioCreateDTO compraDTO)
         {
             var nuevaCompra = new CompraAccesorios(
                 0,
@@ -70,7 +73,7 @@ namespace AppForSEII.API.Controllers
             foreach (var lineaDTO in compraDTO.LineasCompra)
             {
                 var accesorio = await _context.Accesorios.FindAsync(lineaDTO.AccesorioId);
-                
+
                 if (accesorio == null)
                 {
                     return NotFound($"El accesorio con ID {lineaDTO.AccesorioId} no existe.");
@@ -105,7 +108,7 @@ namespace AppForSEII.API.Controllers
                 nuevaCompra.FechaCompra,
                 nuevaCompra.PrecioTotal,
                 nuevaCompra.DireccionEnvio,
-                new List<CompraAccesorioItemDTO>() 
+                new List<CompraAccesorioItemDTO>()
             );
 
             return CreatedAtAction("GetCompraAccesorio", new { id = nuevaCompra.Id }, compraRetornoDTO);

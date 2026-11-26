@@ -1,0 +1,186 @@
+@page "/compraaccesorios/createcompra"
+@rendermode InteractiveServer
+
+@using AppForSEII.Web.API
+@inject IAppForSEIIAPIClient apiservice
+@inject CompraAccesoriosStateContainer compraState
+@inject NavigationManager navigation
+
+<PageTitle>Finalizar Compra de Accesorios</PageTitle>
+
+<div class="container">
+    <h3>Finalizar Compra de Accesorios</h3>
+
+    @if (!string.IsNullOrEmpty(messageError))
+    {
+        <div class="alert alert-danger" role="alert" id="ErrorsShown">@messageError</div>
+    }
+
+    @if (!compra.LineasCompra.Any())
+    {
+        <div class="alert alert-warning">
+            No has seleccionado ningún accesorio todavía.
+        </div>
+        <button class="btn btn-secondary" @onclick="VolverASeleccion">
+            Volver a seleccionar accesorios
+        </button>
+    }
+    else
+    {
+        <EditForm Model="compra" OnValidSubmit="OpenDialog">
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" />
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label for="NombreCliente" class="form-label">Nombre</label>
+                    <InputText id="NombreCliente" class="form-control" @bind-Value="compra.NombreCliente" />
+                </div>
+                <div class="col-md-6">
+                    <label for="ApellidosCliente" class="form-label">Apellidos</label>
+                    <InputText id="ApellidosCliente" class="form-control" @bind-Value="compra.ApellidosCliente" />
+                </div>
+                <div class="col-md-6">
+                    <label for="DireccionEnvio" class="form-label">Dirección de envío</label>
+                    <InputText id="DireccionEnvio" class="form-control" @bind-Value="compra.DireccionEnvio" />
+                </div>
+                <div class="col-md-3">
+                    <label for="NumeroTelefono" class="form-label">Teléfono</label>
+                    <InputText id="NumeroTelefono" class="form-control" @bind-Value="compra.NumeroTelefono" />
+                </div>
+                <div class="col-md-3">
+                    <label for="MetodoPago" class="form-label">Método de pago</label>
+                    <InputSelect id="MetodoPago" class="form-select" @bind-Value="compra.MetodoPago">
+                        <option value="@MetodoPago.TarjetaCredito">Tarjeta de Crédito</option>
+                        <option value="@MetodoPago.PayPal">PayPal</option>
+                        <option value="@MetodoPago.Bizum">Bizum</option>
+                    </InputSelect>
+                </div>
+            </div>
+
+            <h4>Resumen de accesorios</h4>
+            <table class="table table-striped" id="TableOfCompraItems">
+                <thead>
+                    <tr>
+                        <th>Accesorio</th>
+                        <th>Cantidad</th>
+                        <th>Precio unitario</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var linea in compra.LineasCompra)
+                    {
+                        var info = compraState.GetAccesorioInfo(linea.AccesorioId);
+                        var precio = info?.Precio ?? 0;
+                        <tr>
+                            <td>@(info?.Nombre ?? $"Accesorio #{linea.AccesorioId}")</td>
+                            <td>
+                                <input type="number" class="form-control form-control-sm" style="width: 80px;"
+                                       min="1" max="@(info?.CantidadDisponible ?? 99)"
+                                       @bind="linea.Cantidad" />
+                            </td>
+                            <td>@precio.ToString("0.00") €</td>
+                            <td>@((precio * linea.Cantidad).ToString("0.00")) €</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <p class="fs-5 fw-bold">Total: @compraState.PrecioTotal.ToString("0.00") €</p>
+
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-outline-secondary" id="ModifyAccesorios"
+                        @onclick="VolverASeleccion">
+                    Modificar accesorios
+                </button>
+                <button type="submit" class="btn btn-primary" id="Submit">
+                    Confirmar compra
+                </button>
+            </div>
+        </EditForm>
+    }
+</div>
+
+@if (dialogIsOpen)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar compra</h5>
+                    <button type="button" class="btn-close" @onclick="CerrarDialog"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Deseas confirmar la compra de @compra.LineasCompra.Sum(l => l.Cantidad) accesorio(s) por un total de <strong>@compraState.PrecioTotal.ToString("0.00") €</strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CerrarDialog">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="Button_DialogOK"
+                            disabled="@isSubmitting" @onclick="ConfirmarCompra">
+                        @(isSubmitting ? "Procesando..." : "Guardar compra")
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private CompraAccesorioCreateDTO compra => compraState.Compra;
+    private bool dialogIsOpen = false;
+    private bool isSubmitting = false;
+    private string messageError = "";
+
+    protected override void OnInitialized()
+    {
+        if (compra.MetodoPago == MetodoPago.NoDefinido)
+        {
+            compra.MetodoPago = MetodoPago.TarjetaCredito;
+        }
+    }
+
+    private void VolverASeleccion()
+    {
+        navigation.NavigateTo("/compraaccesorios/selectaccesoriosforpurchase");
+    }
+
+    private void OpenDialog()
+    {
+        messageError = "";
+        dialogIsOpen = true;
+    }
+
+    private void CerrarDialog()
+    {
+        dialogIsOpen = false;
+    }
+
+    private async Task ConfirmarCompra()
+    {
+        isSubmitting = true;
+        messageError = "";
+
+        try
+        {
+            var compraCreada = await apiservice.PostCompraAccesorioAsync(compra);
+            compraState.CompraProcessed();
+            dialogIsOpen = false;
+            navigation.NavigateTo($"/compraaccesorios/detailcompra/?CompraID={compraCreada.Id}");
+        }
+        catch (ApiException ex)
+        {
+            dialogIsOpen = false;
+            messageError = $"Error al procesar la compra ({ex.StatusCode}): {ex.Response}";
+        }
+        catch (Exception ex)
+        {
+            dialogIsOpen = false;
+            messageError = $"Error inesperado al guardar la compra: {ex.Message}";
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+}
