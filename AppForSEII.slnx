@@ -1,4 +1,5 @@
 <Solution>
+  <Folder Name="/src/" />
   <Folder Name="/src/appforseii.api/">
     <Project Path="src/appforseii.api/AppForSEII.API.csproj" />
   </Folder>
@@ -12,4 +13,5 @@
   <Folder Name="/test/appforseii.ut/">
     <Project Path="test/appforseii.ut/AppForSEII.UT.csproj" />
   </Folder>
+  <Project Path="LogViewer/LogViewer.csproj" />
 </Solution>

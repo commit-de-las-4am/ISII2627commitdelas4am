@@ -2,6 +2,7 @@ using AppForSEII.API.Data;
 using AppForSEII.API.DTOs.AccesorioDTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace AppForSEII.API.Controllers
 {
@@ -10,10 +11,12 @@ namespace AppForSEII.API.Controllers
     public class AccesoriosController : ControllerBase
     {
         private protected readonly ApplicationDbContext _context;
+        private readonly ILogger<AccesoriosController> _logger;
 
-        public AccesoriosController(ApplicationDbContext context)
+        public AccesoriosController(ApplicationDbContext context, ILogger<AccesoriosController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -32,6 +35,7 @@ namespace AppForSEII.API.Controllers
                 ))
                 .ToListAsync();
 
+            _logger.LogInformation("Consulta de accesorios recibida");
             return Ok(accesorios);
         }
     }
